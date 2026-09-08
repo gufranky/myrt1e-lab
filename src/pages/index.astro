@@ -21,27 +21,17 @@ import '../styles/global.css';
         <a class="masthead__brand" href="/" aria-label="Myrtle Archive home">myrt1e<span>_</span></a>
         <p>个人数字自留地</p><div class="masthead__state"><i></i> SYSTEM NOMINAL</div>
       </header>
-      <button class="field-note" type="button" data-dock><span>●</span> ARCHIVE STATUS / ONLINE</button>
       <div class="hero-copy" data-copy>
-        <p class="hero-copy__kicker">武汉大学 · 渲染 / 游戏 / AI</p>
-        <h1>MYRTLE<br />ARCHIVE</h1>
-        <div class="command-line" aria-label="Research interests">
-          <span class="command-line__mark" aria-hidden="true"></span>
-          <div><div class="command-line__dots" aria-hidden="true"><i></i><i></i><i></i></div><p><b>myrt1e@lab:~$</b> <span data-type-line>initialising realtime worlds...</span><em aria-hidden="true"></em></p></div>
+        <p class="hero-copy__kicker"><span></span> WUHAN UNIVERSITY / RENDERING · GAME · AI</p>
+        <h1 data-title="myrt1e">myrt1e</h1>
+        <div class="command-line" aria-label="Personal archive terminal">
+          <span class="command-line__mark" aria-hidden="true">M</span>
+          <div><div class="command-line__dots" aria-hidden="true"><i></i><i></i><i></i></div><p><b>myrt1e@archive:~$</b> <span data-type-line>enter the private system</span><em aria-hidden="true"></em></p></div>
         </div>
-        <button class="start-game" type="button" data-dock><span></span>ENTER ARCHIVE</button>
+        <button class="start-game" type="button" data-enter><span></span>Start game</button>
       </div>
-      <section class="identity-card" aria-label="Myrtle profile terminal" data-profile>
-        <div class="core" aria-hidden="true"><div class="core__ring"></div><div class="core__facet">M</div></div>
-        <div class="profile-terminal">
-          <div class="profile-terminal__bar"><span><i></i><i></i><i></i></span><b>myrtle.profile / read-only</b><small>×</small></div>
-          <p class="path">C:\\Users\\myrt1e\\archive\\identity</p>
-          <p class="identity-command"><b>profile@myrtle:~$</b> whoami <em aria-hidden="true"></em></p>
-          <h2>myrt1e</h2><p class="identity-copy">研究实时渲染、游戏技术与 AI；在这里记录仍在生长的技术世界。</p>
-          <nav aria-label="Profile links"><a href="mailto:g2676536169@gmail.com">MAIL</a><a href="https://github.com/myrt1e" target="_blank" rel="noreferrer">GITHUB</a><a href="#main-content">INDEX</a></nav>
-        </div>
-      </section>
-      <button class="scroll-cue" type="button" data-dock aria-label="Reveal profile terminal"><span>scroll to initialise</span><b>⌄</b></button>
+      <span class="signal-mote mote-a" aria-hidden="true"></span><span class="signal-mote mote-b" aria-hidden="true"></span><span class="signal-mote mote-c" aria-hidden="true"></span>
+      <button class="scroll-cue" type="button" data-enter aria-label="Scroll to archive content"><span>scroll to enter</span><b>⌄</b></button>
     </div>
   </section>
   <div class="signal-rail" aria-hidden="true"><span></span><b>NODE / 114.21.18</b><span></span></div>
@@ -53,22 +43,14 @@ import '../styles/global.css';
 </main>
 
 <script>
-  const hero = document.querySelector('[data-hero]');
-  const dockControls = document.querySelectorAll('[data-dock]');
+  const enterControls = document.querySelectorAll('[data-enter]');
   const typeLine = document.querySelector('[data-type-line]');
   const clock = document.querySelector('[data-clock]');
-  let docked = false;
-  let unlockTimer = 0;
-  const lines = ['initialising realtime worlds...', 'loading renderer / game / ai...', 'archive connection established.'];
+  const lines = ['enter the private system', 'loading renderer / game / ai...', 'archive connection established.'];
   let lineIndex = 0;
-  const setDocked = () => {
-    if (!hero || docked) return;
-    docked = true; hero.classList.add('is-docked');
-    window.clearTimeout(unlockTimer);
-    unlockTimer = window.setTimeout(() => document.querySelector('#main-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 1250);
-  };
-  dockControls.forEach((control) => control.addEventListener('click', setDocked));
-  window.addEventListener('wheel', (event) => { if (window.scrollY < 8 && event.deltaY > 10) setDocked(); }, { passive: true });
+  const enterArchive = () => document.querySelector('#main-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  enterControls.forEach((control) => control.addEventListener('click', enterArchive));
+  window.addEventListener('wheel', (event) => { if (window.scrollY < 8 && event.deltaY > 10) enterArchive(); }, { passive: true });
   window.setInterval(() => { if (typeLine) { lineIndex = (lineIndex + 1) % lines.length; typeLine.textContent = lines[lineIndex]; } }, 3600);
   const updateClock = () => { if (clock) clock.textContent = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date()); };
   updateClock(); window.setInterval(updateClock, 1000);
