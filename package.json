@@ -1,1 +1,1 @@
-{"name":"myrtle-rebuild","private":true,"type":"module","scripts":{"dev":"astro dev","build":"astro build"},"dependencies":{"@astrojs/node":"^10.1.4","@types/leaflet":"^1.9.22","astro":"^6.3.3","leaflet":"^1.9.4"}}
+{"name":"myrtle-rebuild","private":true,"type":"module","scripts":{"dev":"astro dev","build":"astro build"},"dependencies":{"@astrojs/node":"^10.1.4","@types/leaflet":"^1.9.22","astro":"^6.3.3","l2d-widget":"^0.1.2","leaflet":"^1.9.4","live2d-widget-model-hibiki":"^1.0.5","live2d-widget-model-koharu":"^1.0.5","live2d-widget-model-shizuku":"^1.0.5"}}
