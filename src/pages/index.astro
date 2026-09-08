@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Workspace from '../components/Workspace.astro';
 ---
 
 <!doctype html>
@@ -23,7 +24,21 @@ import '../styles/global.css';
       </header>
       <div class="hero-copy" data-copy>
         <p class="hero-copy__kicker"><span></span> WUHAN UNIVERSITY / RENDERING · GAME · AI</p>
-        <h1 data-title="myrt1e">myrt1e</h1>
+        <h1 aria-label="Myrt1e lab">
+          <svg class="title-mark" viewBox="0 0 760 170" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="title-gold" x1="0" y1="0" x2="0.07" y2="1">
+                <stop offset="0%" stop-color="#fae5a0" />
+                <stop offset="36%" stop-color="#f1d174" />
+                <stop offset="48%" stop-color="#e8c464" />
+                <stop offset="60%" stop-color="#f5d98a" />
+                <stop offset="78%" stop-color="#ebc86b" />
+                <stop offset="100%" stop-color="#dfb957" />
+              </linearGradient>
+            </defs>
+            <text x="380" y="118" text-anchor="middle" fill="url(#title-gold)" stroke="#fff3ce" stroke-width="1.7" stroke-linejoin="round" paint-order="stroke fill">Myrt1e lab</text>
+          </svg>
+        </h1>
         <div class="command-line" aria-label="Personal archive terminal">
           <span class="command-line__mark" aria-hidden="true">&gt;_</span>
           <div><div class="command-line__dots" aria-hidden="true"><i></i><i></i><i></i></div><p><b>myrt1e@archive:~$</b> <span data-type-line>enter the private system</span><em aria-hidden="true"></em></p></div>
@@ -35,11 +50,7 @@ import '../styles/global.css';
     </div>
   </section>
   <div class="signal-rail" aria-hidden="true"><span></span><b>NODE / 114.21.18</b><span></span></div>
-  <section id="main-content" class="signal-field" aria-label="Archive overview">
-    <p class="signal-field__word">MYRTLE</p>
-    <article class="local-signal"><p>LOCAL SIGNAL</p><strong data-clock>--:--:--</strong><span>Wuhan · China Standard Time</span></article>
-    <article class="welcome-panel"><p>欢迎进入。</p><h2>这里不是作品陈列室，<br />而是一个持续运行的技术世界。</h2><span>从实时图形、游戏机制到智能系统，内容将以档案形式逐步归档。</span></article>
-  </section>
+  <Workspace />
 </main>
 
 <script>
@@ -51,7 +62,42 @@ import '../styles/global.css';
   const enterArchive = () => document.querySelector('#main-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   enterControls.forEach((control) => control.addEventListener('click', enterArchive));
   window.addEventListener('wheel', (event) => { if (window.scrollY < 8 && event.deltaY > 10) enterArchive(); }, { passive: true });
-  window.setInterval(() => { if (typeLine) { lineIndex = (lineIndex + 1) % lines.length; typeLine.textContent = lines[lineIndex]; } }, 3600);
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let characterIndex = 0;
+  let deleting = false;
+  let typingTimer = 0;
+  const tickTyping = () => {
+    if (!typeLine || document.hidden || reducedMotion.matches) return;
+    const characters = Array.from(lines[lineIndex]);
+    characterIndex += deleting ? -1 : 1;
+    typeLine.textContent = characters.slice(0, characterIndex).join('');
+    let delay = deleting ? 38 : 78;
+    if (!deleting && characterIndex === characters.length) {
+      deleting = true;
+      delay = 1800;
+    } else if (deleting && characterIndex === 0) {
+      deleting = false;
+      lineIndex = (lineIndex + 1) % lines.length;
+      delay = 420;
+    }
+    typingTimer = window.setTimeout(tickTyping, delay);
+  };
+  const syncTyping = () => {
+    window.clearTimeout(typingTimer);
+    if (!typeLine) return;
+    if (reducedMotion.matches) {
+      typeLine.textContent = lines[0];
+      characterIndex = 0;
+      lineIndex = 0;
+      deleting = false;
+    } else if (!document.hidden) {
+      typeLine.textContent = Array.from(lines[lineIndex]).slice(0, characterIndex).join('');
+      typingTimer = window.setTimeout(tickTyping, 420);
+    }
+  };
+  document.addEventListener('visibilitychange', syncTyping);
+  reducedMotion.addEventListener('change', syncTyping);
+  syncTyping();
   const updateClock = () => { if (clock) clock.textContent = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date()); };
   updateClock(); window.setInterval(updateClock, 1000);
 </script>
