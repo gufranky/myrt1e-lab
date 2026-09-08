@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 
 const BLOG = 'https://blog.myrt1e.com/wp-json/wp/v2/posts?per_page=6&_fields=title,link,date,categories';
 let cache: { posts: any[]; at: number } | null = null;
+const decodeHtml = (value: string) => value.replace(/&#(x[0-9a-f]+|\d+);?/gi, (_, code) => String.fromCodePoint(code.toLowerCase().startsWith('x') ? parseInt(code.slice(1), 16) : Number(code))).replace(/&(?:amp|lt|gt|quot|apos|nbsp);/g, entity => ({ '&amp;':'&', '&lt;':'<', '&gt;':'>', '&quot;':'"', '&apos;':"'", '&nbsp;':' ' } as Record<string,string>)[entity] || entity);
 
 export const GET: APIRoute = async () => {
   if (cache && Date.now() - cache.at < 10 * 60 * 1000) return Response.json({ posts: cache.posts });
@@ -10,7 +11,7 @@ export const GET: APIRoute = async () => {
     if (!response.ok) throw new Error('blog unavailable');
     const raw = await response.json();
     const posts = raw.map((post: any) => ({
-      title: String(post.title?.rendered || '').replace(/<[^>]+>/g, ''),
+      title: decodeHtml(String(post.title?.rendered || '').replace(/<[^>]+>/g, '')),
       link: post.link,
       date: post.date ? new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(post.date)) : '',
       category: 'BLOG'
