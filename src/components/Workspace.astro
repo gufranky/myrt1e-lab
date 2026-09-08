@@ -1,12 +1,15 @@
 <section id="main-content" class="editor" aria-label="个人工作台">
   <header class="editor-bar"><div><span class="editor-logo">M</span><strong>Myrt1e lab</strong><span class="editor-divider">/</span><span>个人工作台</span></div><button data-reset>恢复默认布局</button></header>
   <div class="editor-body">
-    <aside class="library"><h2>控件库 <span>05</span></h2><div class="library-search">⌕&nbsp; 搜索控件</div><p class="library-group">信息</p>
+    <aside class="library"><h2>控件库 <span>08</span></h2><div class="library-search">⌕&nbsp; 搜索控件</div><p class="library-group">信息</p>
       <button class="library-item" draggable="true" data-add="location"><span class="library-icon">⌖</span><strong>地理位置</strong><b>+</b></button>
       <button class="library-item" draggable="true" data-add="quote"><span class="library-icon">“</span><strong>一言</strong><b>+</b></button>
       <button class="library-item" draggable="true" data-add="intro"><span class="library-icon">◎</span><strong>自我介绍</strong><b>+</b></button>
       <button class="library-item" draggable="true" data-add="contact"><span class="library-icon">↗</span><strong>联系我</strong><b>+</b></button>
       <button class="library-item" draggable="true" data-add="time"><span class="library-icon">◷</span><strong>时间</strong><b>+</b></button>
+      <button class="library-item" draggable="true" data-add="nowplaying"><span class="library-icon">♫</span><strong>正在播放</strong><b>+</b></button>
+      <button class="library-item" draggable="true" data-add="terminal"><span class="library-icon">›_</span><strong>终端日志</strong><b>+</b></button>
+      <button class="library-item" draggable="true" data-add="stack"><span class="library-icon">▦</span><strong>技术栈</strong><b>+</b></button>
       <div class="library-note">拖入工作区以添加</div>
     </aside>
     <div class="workspace-shell"><div class="workspace-tab"><span>▧ &nbsp; 我的空间</span><small>拖动标题移动 · 拖动右下角缩放</small></div><div class="canvas-scroll"><div class="workspace-canvas" data-canvas><p class="canvas-empty" data-empty hidden>工作区为空<br/><small>从左侧添加你的第一个控件</small></p></div></div></div>
@@ -21,22 +24,29 @@
 
 <template id="time-widget"><div class="time-body"><span class="intro-eyebrow">TIME STREAM / 02</span><div class="time-row"><div><small>GUFRANKY / 武汉</small><strong data-home-time>--:--:--</strong><em>Asia/Shanghai</em><b data-time-delta-home>计算时差中…</b></div><i></i><div><small>VISITOR / 访客</small><strong data-visitor-time>--:--:--</strong><em data-visitor-zone>检测时区中…</em></div></div></div><div class="widget-foot"><span>时间 / TIMEZONE</span><span data-time-delta>LOCAL SYNC</span></div></template>
 
+<template id="nowplaying-widget"><div class="nowplaying-body"><span class="intro-eyebrow">MEDIA MODULE / 04</span><div class="album-art" aria-hidden="true"><span>MYR</span><i></i></div><div class="nowplaying-meta"><strong data-track-title>Shader Toy / 夜航</strong><small data-track-subtitle>深夜渲染工作台 · 本地播放</small></div><div class="player-progress"><i data-progress></i></div><div class="player-controls"><button data-player-prev aria-label="上一首">◀</button><button class="player-main" data-player-toggle aria-label="播放或暂停">▶</button><button data-player-next aria-label="下一首">▶</button><span data-player-time>02:14 / 04:52</span></div></div><div class="widget-foot"><span>正在播放 / MEDIA</span><span data-player-state>PLAYING</span></div></template>
+<template id="terminal-widget"><div class="terminal-body" data-terminal-body><div class="terminal-line"><span class="terminal-prompt">gufranky@archive:~$</span><span data-terminal-current>boot --workspace</span></div></div></template>
+<template id="stack-widget"><div class="stack-body"><span class="intro-eyebrow">LOADOUT / TECH STACK</span><div class="stack-grid"><span><b>UE</b><small>UE5</small></span><span><b>C++</b><small>ENGINE</small></span><span><b>HLSL</b><small>SHADER</small></span><span><b>PY</b><small>TOOLS</small></span></div></div><div class="widget-foot"><span>技术栈 / LOADOUT</span><span>04 EQUIPPED</span></div></template>
+
 <script>
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
-  type Kind = 'location' | 'quote' | 'intro' | 'contact' | 'time';
+  type Kind = 'location' | 'quote' | 'intro' | 'contact' | 'time' | 'nowplaying' | 'terminal' | 'stack';
   type Item = {id:string; kind:Kind; x:number; y:number; w:number; h:number; parentId?:string};
   const canvas = document.querySelector<HTMLElement>('[data-canvas]')!;
   const status = document.querySelector<HTMLElement>('[data-save-status]')!;
   const key = 'myrt1e-workspace-v1';
-  const defaults = (): Item[] => [{id:'home',kind:'location',x:32,y:32,w:360,h:320},{id:'words',kind:'quote',x:424,y:96,w:360,h:290},{id:'profile',kind:'intro',x:220,y:430,w:440,h:310},{id:'contact',kind:'contact',x:690,y:450,w:390,h:230},{id:'time',kind:'time',x:690,y:710,w:390,h:210}];
+  const defaults = (): Item[] => [{id:'home',kind:'location',x:32,y:32,w:360,h:320},{id:'words',kind:'quote',x:424,y:96,w:360,h:290},{id:'profile',kind:'intro',x:220,y:430,w:440,h:310},{id:'contact',kind:'contact',x:690,y:450,w:390,h:230},{id:'time',kind:'time',x:690,y:710,w:390,h:210},{id:'media',kind:'nowplaying',x:32,y:780,w:360,h:270},{id:'logs',kind:'terminal',x:424,y:780,w:420,h:270},{id:'stack',kind:'stack',x:890,y:780,w:300,h:240}];
   let items = defaults();
   let topLayer = 1;
   const quotes = [['千里之行，始于足下。','《老子》'],['不积跬步，无以至千里。','《荀子·劝学》'],['山重水复疑无路，柳暗花明又一村。','陆游'],['纸上得来终觉浅，绝知此事要躬行。','陆游']];
-  try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (Array.isArray(saved)) items = saved.filter((v) => v && typeof v.id === 'string' && ['location','quote','intro','contact','time'].includes(v.kind) && ['x','y','w','h'].every(k => Number.isFinite(v[k]))).slice(0,20).map(v => ({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(260,Math.min(800,v.w)),h:Math.max(250,Math.min(700,v.h))})); } catch {}
+  try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (Array.isArray(saved)) items = saved.filter((v) => v && typeof v.id === 'string' && ['location','quote','intro','contact','time','nowplaying','terminal','stack'].includes(v.kind) && ['x','y','w','h'].every(k => Number.isFinite(v[k]))).slice(0,20).map(v => ({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(260,Math.min(800,v.w)),h:Math.max(250,Math.min(700,v.h))})); } catch {}
   if (!items.some(item => item.kind === 'intro')) items.push({id:'profile',kind:'intro',x:220,y:430,w:440,h:310});
   if (!items.some(item => item.kind === 'contact')) items.push({id:'contact',kind:'contact',x:690,y:450,w:390,h:230});
   if (!items.some(item => item.kind === 'time')) items.push({id:'time',kind:'time',x:690,y:710,w:390,h:210});
+  if (!items.some(item => item.kind === 'nowplaying')) items.push({id:'media',kind:'nowplaying',x:32,y:780,w:360,h:270});
+  if (!items.some(item => item.kind === 'terminal')) items.push({id:'logs',kind:'terminal',x:424,y:780,w:420,h:270});
+  if (!items.some(item => item.kind === 'stack')) items.push({id:'stack',kind:'stack',x:890,y:780,w:300,h:240});
   function save() { try { localStorage.setItem(key,JSON.stringify(items)); status.textContent = '布局已保存到此浏览器'; } catch { status.textContent = '无法保存，当前布局仅本次有效'; } }
   function extent() { canvas.style.minWidth = `${Math.max(820,...items.map(i=>i.x+i.w+32))}px`; canvas.style.minHeight = `${Math.max(640,...items.map(i=>i.y+i.h+32))}px`; document.querySelector<HTMLElement>('[data-empty]')!.hidden = items.length > 0; }
   function position(el:HTMLElement,item:Item) { Object.assign(el.style,{left:`${item.x}px`,top:`${item.y}px`,width:`${item.w}px`,height:`${item.h}px`}); }
@@ -44,7 +54,7 @@
   function mount(item:Item) {
     const el = document.createElement('article'); el.className = `workspace-widget${item.parentId ? ' workspace-child' : ''}`; el.dataset.itemId=item.id; el.dataset.itemKind=item.kind; position(el,item);
     const head = document.createElement('div'); head.className = 'widget-head';
-    const handle = document.createElement('button'); handle.className='widget-drag'; handle.textContent=item.kind === 'location' ? '⌖  地理位置' : item.kind === 'quote' ? '“  一言' : item.kind === 'intro' ? '◎  个人简介' : item.kind === 'contact' ? '↗  联系我' : '◷  时间'; handle.setAttribute('aria-label','移动控件：拖动或使用方向键');
+    const handle = document.createElement('button'); handle.className='widget-drag'; handle.textContent=item.kind === 'location' ? '⌖  地理位置' : item.kind === 'quote' ? '“  一言' : item.kind === 'intro' ? '◎  个人简介' : item.kind === 'contact' ? '↗  联系我' : item.kind === 'time' ? '◷  时间' : item.kind === 'nowplaying' ? '♫  正在播放' : item.kind === 'terminal' ? '›_  终端日志' : '▦  技术栈'; handle.setAttribute('aria-label','移动控件：拖动或使用方向键');
     const close=document.createElement('button'); close.className='widget-close';close.textContent='×';close.setAttribute('aria-label','移除此控件'); head.append(handle,close);
     const content=document.createElement('div');content.className='widget-content';content.append((document.getElementById(`${item.kind}-widget`) as HTMLTemplateElement).content.cloneNode(true));
     const resize=document.createElement('button');resize.className='widget-resize';resize.setAttribute('aria-label','调整大小：拖动或使用方向键');
@@ -75,6 +85,12 @@
     if(item.kind==='time'){
       const home=content.querySelector<HTMLElement>('[data-home-time]');const visitor=content.querySelector<HTMLElement>('[data-visitor-time]');const visitorZone=content.querySelector<HTMLElement>('[data-visitor-zone]');const delta=content.querySelector<HTMLElement>('[data-time-delta]');const deltaHome=content.querySelector<HTMLElement>('[data-time-delta-home]');const homeZone='Asia/Shanghai';let visitorTimezone=Intl.DateTimeFormat().resolvedOptions().timeZone || 'LOCAL';const offset=(zone:string,date:Date)=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(date).reduce((out:any,p)=>{out[p.type]=p.value;return out;},{});return (Date.UTC(Number(parts.year),Number(parts.month)-1,Number(parts.day),Number(parts.hour)%24,Number(parts.minute),Number(parts.second))-date.getTime())/60000;};const render=()=>{const now=new Date();if(home)home.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:homeZone,hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(now);if(visitor)visitor.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:visitorTimezone,hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(now);if(visitorZone)visitorZone.textContent=visitorTimezone;const difference=Math.round(offset(visitorTimezone,now)-offset(homeZone,now));const sign=difference===0?'±':difference>0?'+':'−';const absolute=Math.abs(difference);const hours=Math.floor(absolute/60),minutes=absolute%60;const readable=`${sign}${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}`;if(deltaHome)deltaHome.textContent=`${readable} VS VISITOR`;if(delta)delta.textContent=`${readable} OFFSET`;};render();fetch('/api/location').then(response=>response.ok?response.json():null).then(data=>{if(data?.timezone?.id)visitorTimezone=data.timezone.id;render();}).catch(()=>{});window.setInterval(render,1000);
     }
+    if(item.kind==='nowplaying'){
+      const tracks=[['Shader Toy / 夜航','深夜渲染工作台 · 本地播放'],['Hades II / Nocturne','Steam 最近游玩 · 记录同步'],['UE5 Render Pass','个人收藏 · Engine Room']];let trackIndex=0;let playing=true;let progress=36;const title=content.querySelector<HTMLElement>('[data-track-title]');const subtitle=content.querySelector<HTMLElement>('[data-track-subtitle]');const bar=content.querySelector<HTMLElement>('[data-progress]');const toggle=content.querySelector<HTMLButtonElement>('[data-player-toggle]');const state=content.querySelector<HTMLElement>('[data-player-state]');const render=()=>{if(title)title.textContent=tracks[trackIndex][0];if(subtitle)subtitle.textContent=tracks[trackIndex][1];if(bar)bar.style.width=`${progress}%`;if(toggle)toggle.textContent=playing?'Ⅱ':'▶';if(state)state.textContent=playing?'PLAYING':'PAUSED';};const next=()=>{trackIndex=(trackIndex+1)%tracks.length;progress=0;playing=true;render();};toggle?.addEventListener('click',()=>{playing=!playing;render();});content.querySelector<HTMLButtonElement>('[data-player-next]')?.addEventListener('click',next);content.querySelector<HTMLButtonElement>('[data-player-prev]')?.addEventListener('click',()=>{trackIndex=(trackIndex+tracks.length-1)%tracks.length;progress=0;render();});render();window.setInterval(()=>{if(playing){progress=(progress+.4)%100;render();}},1000);
+    }
+    if(item.kind==='terminal'){
+      const body=content.querySelector<HTMLElement>('[data-terminal-body]');const logs=['renderer pass compiled · 12 draw calls','CS plugin hot-reload complete','shader permutation cache warmed','AI texture notes indexed','workspace autosave committed'];let index=0;const append=()=>{if(!body)return;const line=document.createElement('div');line.className='terminal-line';line.innerHTML=`<span class="terminal-time">${new Date().toLocaleTimeString('en-GB',{hour12:false})}</span><span>${logs[index]}</span>`;body.append(line);while(body.children.length>6)body.firstElementChild?.remove();body.scrollTop=body.scrollHeight;index=(index+1)%logs.length;};append();window.setInterval(append,2600);
+    }
     if(item.kind==='contact'){
       const brands=['bilibili','github','steam'];
       content.querySelectorAll<SVGElement>('.contact-icon').forEach((old,index)=>{const img=document.createElement('img');img.className='contact-icon';img.src=`https://cdn.simpleicons.org/${brands[index]}/e7c164`;img.alt=old.getAttribute('aria-label') || brands[index];img.loading='lazy';old.replaceWith(img);});
@@ -88,9 +104,9 @@
     }
     bind(handle,false);bind(resize,true);clock();
   }
-  function add(kind:Kind,x=40+items.length*24,y=40+items.length*24,parentId?:string){if(items.length>=20){status.textContent='最多放置 20 个控件';return;}const item={id:crypto.randomUUID(),kind,x:Math.max(0,x),y:Math.max(0,y),w:kind==='intro'?440:kind==='contact'?390:kind==='time'?390:360,h:kind==='location'?320:kind==='intro'?310:kind==='contact'?230:kind==='time'?210:290,parentId};items.push(item);mount(item);extent();save();}
+  function add(kind:Kind,x=40+items.length*24,y=40+items.length*24,parentId?:string){if(items.length>=20){status.textContent='最多放置 20 个控件';return;}const item={id:crypto.randomUUID(),kind,x:Math.max(0,x),y:Math.max(0,y),w:kind==='intro'?440:kind==='contact'?390:kind==='time'?390:kind==='nowplaying'?360:kind==='terminal'?420:kind==='stack'?300:360,h:kind==='location'?320:kind==='intro'?310:kind==='contact'?230:kind==='time'?210:kind==='nowplaying'?270:kind==='terminal'?270:kind==='stack'?240:290,parentId};items.push(item);mount(item);extent();save();}
   document.querySelectorAll<HTMLButtonElement>('[data-add]').forEach(button=>{button.onclick=()=>add(button.dataset.add as Kind);button.ondragstart=e=>{e.dataTransfer?.setData('text/plain',button.dataset.add!);};});
-  canvas.ondragover=e=>{e.preventDefault();};canvas.ondrop=e=>{e.preventDefault();const kind=e.dataTransfer?.getData('text/plain');if(kind==='location'||kind==='quote'||kind==='intro'||kind==='contact'||kind==='time'){const target=(e.target as HTMLElement).closest<HTMLElement>('[data-item-kind="intro"]');const r=canvas.getBoundingClientRect();const parentId=kind==='contact'&&target ? target.dataset.itemId : undefined;add(kind,e.clientX-r.left,e.clientY-r.top,parentId);if(parentId)status.textContent='联系我已嵌入个人简介';}};
+  canvas.ondragover=e=>{e.preventDefault();};canvas.ondrop=e=>{e.preventDefault();const kind=e.dataTransfer?.getData('text/plain');if(kind==='location'||kind==='quote'||kind==='intro'||kind==='contact'||kind==='time'||kind==='nowplaying'||kind==='terminal'||kind==='stack'){const target=(e.target as HTMLElement).closest<HTMLElement>('[data-item-kind="intro"]');const r=canvas.getBoundingClientRect();const parentId=kind==='contact'&&target ? target.dataset.itemId : undefined;add(kind,e.clientX-r.left,e.clientY-r.top,parentId);if(parentId)status.textContent='联系我已嵌入个人简介';}};
   document.querySelector<HTMLButtonElement>('[data-reset]')!.onclick=()=>{canvas.querySelectorAll('.workspace-widget').forEach(el=>el.remove());items=defaults();items.forEach(mount);extent();save();};
   const nativeFetch=window.fetch.bind(window);window.fetch=(input,init)=>{const url=typeof input==='string'?input:input instanceof URL?input.toString():input.url;if(url.includes('ipwho.is/')||url.includes('ipinfo.io/json'))return nativeFetch('/api/location',init);return nativeFetch(input,init);};
   items.forEach(mount);extent();window.setInterval(clock,30000);
@@ -214,6 +230,29 @@
   .workspace-canvas :global(.time-row b) { color: #e7c164; font: 9px 'IBM Plex Mono', monospace; letter-spacing: .04em; }
   .workspace-canvas :global(.time-row strong) { color: #f0d486; font: 700 31px 'Quicksand', sans-serif; letter-spacing: .03em; }
   .workspace-canvas :global(.time-row > i) { height: 57px; background: #e7c16455; }
+  .workspace-canvas :global(.nowplaying-body) { flex: 1; padding: 17px 19px 13px; background: radial-gradient(ellipse at 85% 0%, #e8c86618, transparent 68%); }
+  .workspace-canvas :global(.album-art) { position: relative; display: grid; place-items: center; float: left; width: 72px; height: 72px; margin: 14px 14px 13px 0; overflow: hidden; border: 1px solid #e7c16477; border-radius: 5px; background: linear-gradient(135deg, #e7c164, #49402b 46%, #1c1d1d 47%); color: #2b2b26; font: 800 18px 'Nunito', sans-serif; }
+  .workspace-canvas :global(.album-art)::after { position: absolute; inset: 0; background: repeating-linear-gradient(135deg, transparent 0 7px, #fff3 8px 9px); content: ''; }
+  .workspace-canvas :global(.album-art i) { position: absolute; right: -12px; bottom: -12px; width: 38px; height: 38px; border: 1px solid #fff8; border-radius: 50%; }
+  .workspace-canvas :global(.nowplaying-meta) { min-height: 72px; padding-top: 14px; }
+  .workspace-canvas :global(.nowplaying-meta strong), .workspace-canvas :global(.nowplaying-meta small) { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .workspace-canvas :global(.nowplaying-meta strong) { color: #f2e5bf; font: 700 16px 'Nunito', sans-serif; }
+  .workspace-canvas :global(.nowplaying-meta small) { margin-top: 7px; color: #999c92; font: 10px 'IBM Plex Mono', monospace; }
+  .workspace-canvas :global(.player-progress) { clear: both; height: 3px; background: #ffffff18; }
+  .workspace-canvas :global(.player-progress i) { display: block; width: 36%; height: 100%; background: #e7c164; transition: width .4s linear; }
+  .workspace-canvas :global(.player-controls) { display: flex; align-items: center; gap: 9px; margin-top: 13px; }
+  .workspace-canvas :global(.player-controls button) { width: 28px; height: 26px; padding: 0; border: 1px solid #e7c16445; border-radius: 3px; background: #ffffff06; color: #d9bd6c; font-size: 10px; }
+  .workspace-canvas :global(.player-controls .player-main) { width: 34px; color: #24251f; background: #e7c164; }
+  .workspace-canvas :global(.player-controls span) { margin-left: auto; color: #878a82; font: 9px 'IBM Plex Mono', monospace; }
+  .workspace-canvas :global(.terminal-body) { flex: 1; overflow: auto; padding: 16px 17px; background: #121414; color: #ced0c8; font: 11px/1.8 'IBM Plex Mono', monospace; }
+  .workspace-canvas :global(.terminal-line) { display: flex; gap: 10px; white-space: nowrap; }
+  .workspace-canvas :global(.terminal-prompt), .workspace-canvas :global(.terminal-time) { color: #e7c164; }
+  .workspace-canvas :global(.terminal-line > span:last-child) { overflow: hidden; text-overflow: ellipsis; }
+  .workspace-canvas :global(.stack-body) { flex: 1; padding: 18px; background: radial-gradient(ellipse at 100% 0%, #e8c86618, transparent 70%); }
+  .workspace-canvas :global(.stack-grid) { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 17px; }
+  .workspace-canvas :global(.stack-grid span) { display: flex; align-items: center; gap: 9px; padding: 10px 8px; border: 1px solid #e7c16435; border-radius: 4px; background: #ffffff04; }
+  .workspace-canvas :global(.stack-grid b) { display: grid; place-items: center; width: 31px; height: 31px; border: 1px solid #e7c16480; border-radius: 3px; color: #e7c164; font: 700 10px 'IBM Plex Mono', monospace; }
+  .workspace-canvas :global(.stack-grid small) { color: #c4c3b7; font: 9px 'IBM Plex Mono', monospace; }
   .workspace-canvas :global(.quote-symbol) { color: #e8cb7b; }
   .workspace-canvas :global(.widget-resize) { opacity: .5; }
   .workspace-canvas :global(.widget-resize:hover) { opacity: 1; }
