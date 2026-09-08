@@ -57,15 +57,15 @@ import "../styles/workspace.css";
   type Item = {id:string; kind:Kind; x:number; y:number; w:number; h:number; parentId?:string};
   const canvas = document.querySelector<HTMLElement>('[data-canvas]')!;
   const status = document.querySelector<HTMLElement>('[data-save-status]')!;
-  const activeWorkspace = new URLSearchParams(location.search).get('workspace') || 'showcase';
+  let activeWorkspace = new URLSearchParams(location.search).get('workspace') || 'showcase';
   let key = `myrt1e-workspace-v1-${activeWorkspace}`;
   const tabsRoot=document.querySelector<HTMLElement>('[data-workspace-tabs]')!;const tabsKey='myrt1e-workspaces';
   let workspaceTabs:{id:string;name:string}[]=[];try{workspaceTabs=JSON.parse(localStorage.getItem(tabsKey)||'[]');if(!Array.isArray(workspaceTabs))workspaceTabs=[];}catch{}
   if(!workspaceTabs.some(tab=>tab.id==='showcase'))workspaceTabs.unshift({id:'showcase',name:'展示'});
   const persistTabs=()=>{try{localStorage.setItem(tabsKey,JSON.stringify(workspaceTabs));}catch{}};
-  const renderTabs=()=>{tabsRoot.innerHTML=workspaceTabs.map(tab=>`<button class="workspace-tab-button${tab.id===activeWorkspace?' is-active':''}" data-workspace-id="${tab.id}">${tab.name}${tab.id==='showcase'?'<b class="tab-dot"></b>':''}</button>`).join('');tabsRoot.querySelectorAll<HTMLButtonElement>('[data-workspace-id]').forEach(button=>button.onclick=()=>{const id=button.dataset.workspaceId;if(id&&id!==activeWorkspace){save();location.href=`${location.pathname}?workspace=${encodeURIComponent(id)}#main-content`;}});};
+  const renderTabs=()=>{tabsRoot.innerHTML=workspaceTabs.map(tab=>`<button class="workspace-tab-button${tab.id===activeWorkspace?' is-active':''}" data-workspace-id="${tab.id}">${tab.name}${tab.id==='showcase'?'<b class="tab-dot"></b>':''}</button>`).join('');tabsRoot.querySelectorAll<HTMLButtonElement>('[data-workspace-id]').forEach(button=>button.onclick=()=>{const id=button.dataset.workspaceId;if(id&&id!==activeWorkspace)switchWorkspace(id);});};
   renderTabs();persistTabs();
-  document.querySelector<HTMLButtonElement>('[data-workspace-add]')!.onclick=()=>{const id=`workspace-${Date.now()}`;const name=`工作台 ${workspaceTabs.length}`;workspaceTabs.push({id,name});persistTabs();location.href=`${location.pathname}?workspace=${encodeURIComponent(id)}#main-content`;};
+  document.querySelector<HTMLButtonElement>('[data-workspace-add]')!.onclick=()=>{const id=`workspace-${Date.now()}`;const name=`工作台 ${workspaceTabs.length}`;workspaceTabs.push({id,name});persistTabs();switchWorkspace(id);};
   const defaults = (): Item[] => [{id:'home',kind:'location',x:32,y:32,w:360,h:320},{id:'words',kind:'quote',x:424,y:96,w:360,h:290},{id:'profile',kind:'intro',x:220,y:430,w:440,h:310},{id:'contact',kind:'contact',x:690,y:450,w:390,h:230},{id:'time',kind:'time',x:690,y:710,w:390,h:210},{id:'media',kind:'nowplaying',x:32,y:780,w:360,h:270},{id:'logs',kind:'terminal',x:424,y:780,w:420,h:270},{id:'stack',kind:'stack',x:890,y:780,w:300,h:240},{id:'chiaki',kind:'live2d',x:890,y:1040,w:380,h:380},{id:'articles',kind:'article',x:32,y:1080,w:520,h:360},{id:'weather',kind:'weather',x:580,y:1080,w:360,h:280},{id:'system',kind:'system',x:32,y:1480,w:420,h:300}];
   let items = defaults();
   let topLayer = 1;
@@ -85,6 +85,7 @@ import "../styles/workspace.css";
   if (!items.some(item => item.kind === 'weather')) items.push({id:'weather',kind:'weather',x:580,y:1080,w:360,h:280});
   if (!items.some(item => item.kind === 'system')) items.push({id:'system',kind:'system',x:32,y:1840,w:420,h:300});
   function save() { try { localStorage.setItem(key,JSON.stringify(items)); status.textContent = '布局已保存到此浏览器'; } catch { status.textContent = '无法保存，当前布局仅本次有效'; } }
+  function switchWorkspace(id:string){if(id===activeWorkspace)return;save();if(liveAvatar){liveAvatar.destroy();liveAvatar=null;}activeWorkspace=id;key=`myrt1e-workspace-v1-${id}`;items=defaults();try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(Array.isArray(saved))items=saved.filter((v)=>v&&typeof v.id==='string'&&['location','quote','intro','contact','time','nowplaying','terminal','stack','dashboard','live2d','article','weather','system'].includes(v.kind)&&['x','y','w','h'].every(k=>Number.isFinite(v[k]))).slice(0,20).map(v=>({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(260,Math.min(800,v.w)),h:Math.max(250,Math.min(700,v.h))}));}catch{}canvas.querySelectorAll('.workspace-widget').forEach(widget=>widget.remove());items.filter(i=>!i.parentId).forEach(mount);items.filter(i=>i.parentId).forEach(mount);extent();renderTabs();history.pushState({workspace:id},'',`${location.pathname}?workspace=${encodeURIComponent(id)}#main-content`);document.querySelector('.canvas-scroll')?.scrollTo({top:0,behavior:'smooth'});status.textContent=`已切换至 ${workspaceTabs.find(tab=>tab.id===id)?.name||'工作台'}`;}
   function extent() { canvas.style.minWidth = `${Math.max(320,...items.filter(i=>!i.parentId).map(i=>i.x+i.w+24))}px`; canvas.style.minHeight = `${Math.max(640,...items.map(i=>i.y+i.h+32))}px`; document.querySelector<HTMLElement>('[data-empty]')!.hidden = items.length > 0; }
   function position(el:HTMLElement,item:Item) { Object.assign(el.style,{left:`${item.x}px`,top:`${item.y}px`,width:`${item.w}px`,height:`${item.h}px`}); }
   const snap=(value:number,step=16)=>Math.round(value/step)*step;
