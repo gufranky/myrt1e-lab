@@ -2,6 +2,15 @@
 import '../styles/global.css';
 ---
 
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="myrt1e 的个人数字自留地：渲染、游戏与 AI。" />
+    <title>Myrtle Archive</title>
+  </head>
+  <body>
 <main>
   <section class="hero-stage" aria-label="Myrtle Archive opening scene">
     <div class="hero" data-hero>
@@ -64,3 +73,5 @@ import '../styles/global.css';
   const updateClock = () => { if (clock) clock.textContent = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date()); };
   updateClock(); window.setInterval(updateClock, 1000);
 </script>
+  </body>
+</html>
