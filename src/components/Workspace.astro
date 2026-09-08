@@ -71,7 +71,7 @@ import "../styles/workspace.css";
   let topLayer = 1;
   let liveAvatar:any = null;
   const quotes = [['千里之行，始于足下。','《老子》'],['不积跬步，无以至千里。','《荀子·劝学》'],['山重水复疑无路，柳暗花明又一村。','陆游'],['纸上得来终觉浅，绝知此事要躬行。','陆游']];
-  try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (Array.isArray(saved)) items = saved.filter((v) => v && typeof v.id === 'string' && ['location','quote','intro','contact','time','nowplaying','terminal','stack','dashboard','live2d','article','weather','system'].includes(v.kind) && ['x','y','w','h'].every(k => Number.isFinite(v[k]))).slice(0,20).map(v => ({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(260,Math.min(800,v.w)),h:Math.max(250,Math.min(700,v.h))})); } catch {}
+  try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (Array.isArray(saved)) items = saved.filter((v) => v && typeof v.id === 'string' && ['location','quote','intro','contact','time','nowplaying','terminal','stack','dashboard','live2d','article','weather','system'].includes(v.kind) && ['x','y','w','h'].every(k => Number.isFinite(v[k]))).slice(0,20).map(v => ({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(180,Math.min(800,v.w)),h:Math.max(140,Math.min(700,v.h))})); } catch {}
   if (!items.some(item => item.kind === 'intro')) items.push({id:'profile',kind:'intro',x:220,y:430,w:440,h:310});
   if (!items.some(item => item.kind === 'contact')) items.push({id:'contact',kind:'contact',x:690,y:450,w:390,h:230});
   if (!items.some(item => item.kind === 'time')) items.push({id:'time',kind:'time',x:690,y:710,w:390,h:210});
@@ -204,10 +204,10 @@ import "../styles/workspace.css";
     }
     function bind(control:HTMLElement, resizing:boolean) {
       control.addEventListener('pointerdown', e=>{if(e.button!==0)return;e.preventDefault();control.setPointerCapture(e.pointerId);el.style.zIndex=String(++topLayer);el.classList.add('is-active'); const start={...item},sx=e.clientX,sy=e.clientY;
-        const move=(ev:PointerEvent)=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;if(resizing){item.w=Math.min(800,Math.max(260,snap(start.w+dx)));item.h=Math.min(700,Math.max(250,snap(start.h+dy)));}else{const peer=snapToPeers(item,start.x+dx,start.y+dy);item.x=Math.min(2000,Math.max(0,Math.abs(peer.x-(start.x+dx))<=14?peer.x:snap(start.x+dx)));item.y=Math.min(2000,Math.max(0,Math.abs(peer.y-(start.y+dy))<=14?peer.y:snap(start.y+dy)));}position(el,item);extent();};
+        const move=(ev:PointerEvent)=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;if(resizing){item.w=Math.min(800,Math.max(180,snap(start.w+dx)));item.h=Math.min(700,Math.max(140,snap(start.h+dy)));}else{const peer=snapToPeers(item,start.x+dx,start.y+dy);item.x=Math.min(2000,Math.max(0,Math.abs(peer.x-(start.x+dx))<=14?peer.x:snap(start.x+dx)));item.y=Math.min(2000,Math.max(0,Math.abs(peer.y-(start.y+dy))<=14?peer.y:snap(start.y+dy)));}position(el,item);extent();};
         const end=()=>{control.removeEventListener('pointermove',move);control.removeEventListener('pointerup',end);control.removeEventListener('pointercancel',end);el.classList.remove('is-active');save();};control.addEventListener('pointermove',move);control.addEventListener('pointerup',end);control.addEventListener('pointercancel',end);
       });
-      control.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const dx=e.key==='ArrowLeft'?-8:e.key==='ArrowRight'?8:0,dy=e.key==='ArrowUp'?-8:e.key==='ArrowDown'?8:0;if(resizing){item.w=Math.max(260,Math.min(800,item.w+dx));item.h=Math.max(250,Math.min(700,item.h+dy));}else{item.x=Math.max(0,Math.min(2000,item.x+dx));item.y=Math.max(0,Math.min(2000,item.y+dy));}position(el,item);extent();save();});
+      control.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const dx=e.key==='ArrowLeft'?-8:e.key==='ArrowRight'?8:0,dy=e.key==='ArrowUp'?-8:e.key==='ArrowDown'?8:0;if(resizing){item.w=Math.max(180,Math.min(800,item.w+dx));item.h=Math.max(140,Math.min(700,item.h+dy));}else{item.x=Math.max(0,Math.min(2000,item.x+dx));item.y=Math.max(0,Math.min(2000,item.y+dy));}position(el,item);extent();save();});
     }
     bind(handle,false);bind(resize,true);clock();
   }
