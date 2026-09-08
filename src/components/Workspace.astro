@@ -70,20 +70,21 @@ import "../styles/workspace.css";
   let items = defaults();
   let topLayer = 1;
   let liveAvatar:any = null;
+  let hasSavedLayout = false;
   const quotes = [['千里之行，始于足下。','《老子》'],['不积跬步，无以至千里。','《荀子·劝学》'],['山重水复疑无路，柳暗花明又一村。','陆游'],['纸上得来终觉浅，绝知此事要躬行。','陆游']];
-  try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (Array.isArray(saved)) items = saved.filter((v) => v && typeof v.id === 'string' && ['location','quote','intro','contact','time','nowplaying','terminal','stack','dashboard','live2d','article','weather','system'].includes(v.kind) && ['x','y','w','h'].every(k => Number.isFinite(v[k]))).slice(0,20).map(v => ({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(180,Math.min(800,v.w)),h:Math.max(140,Math.min(700,v.h))})); } catch {}
-  if (!items.some(item => item.kind === 'intro')) items.push({id:'profile',kind:'intro',x:220,y:430,w:440,h:310});
-  if (!items.some(item => item.kind === 'contact')) items.push({id:'contact',kind:'contact',x:690,y:450,w:390,h:230});
-  if (!items.some(item => item.kind === 'time')) items.push({id:'time',kind:'time',x:690,y:710,w:390,h:210});
-  if (!items.some(item => item.kind === 'nowplaying')) items.push({id:'media',kind:'nowplaying',x:32,y:780,w:360,h:270});
-  if (!items.some(item => item.kind === 'terminal')) items.push({id:'logs',kind:'terminal',x:424,y:780,w:420,h:270});
-  if (!items.some(item => item.kind === 'stack')) items.push({id:'stack',kind:'stack',x:890,y:780,w:300,h:240});
+  try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (Array.isArray(saved)) { hasSavedLayout = true; items = saved.filter((v) => v && typeof v.id === 'string' && ['location','quote','intro','contact','time','nowplaying','terminal','stack','dashboard','live2d','article','weather','system'].includes(v.kind) && ['x','y','w','h'].every(k => Number.isFinite(v[k]))).slice(0,20).map(v => ({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(180,Math.min(800,v.w)),h:Math.max(140,Math.min(700,v.h))})); } } catch {}
+  if (!hasSavedLayout && !items.some(item => item.kind === 'intro')) items.push({id:'profile',kind:'intro',x:220,y:430,w:440,h:310});
+  if (!hasSavedLayout && !items.some(item => item.kind === 'contact')) items.push({id:'contact',kind:'contact',x:690,y:450,w:390,h:230});
+  if (!hasSavedLayout && !items.some(item => item.kind === 'time')) items.push({id:'time',kind:'time',x:690,y:710,w:390,h:210});
+  if (!hasSavedLayout && !items.some(item => item.kind === 'nowplaying')) items.push({id:'media',kind:'nowplaying',x:32,y:780,w:360,h:270});
+  if (!hasSavedLayout && !items.some(item => item.kind === 'terminal')) items.push({id:'logs',kind:'terminal',x:424,y:780,w:420,h:270});
+  if (!hasSavedLayout && !items.some(item => item.kind === 'stack')) items.push({id:'stack',kind:'stack',x:890,y:780,w:300,h:240});
   // Keep one verified Chiaki Nanami GLB viewport in the workspace.
-  if (!items.some(item => item.kind === 'live2d')) items.push({id:'chiaki',kind:'live2d',x:890,y:1040,w:380,h:380});
-  if (!items.some(item => item.kind === 'dashboard')) items.push({id:'dashboard',kind:'dashboard',x:890,y:1040,w:420,h:360});
-  if (!items.some(item => item.kind === 'article')) items.push({id:'articles',kind:'article',x:32,y:1460,w:520,h:360});
-  if (!items.some(item => item.kind === 'weather')) items.push({id:'weather',kind:'weather',x:580,y:1080,w:360,h:280});
-  if (!items.some(item => item.kind === 'system')) items.push({id:'system',kind:'system',x:32,y:1840,w:420,h:300});
+  if (!hasSavedLayout && !items.some(item => item.kind === 'live2d')) items.push({id:'chiaki',kind:'live2d',x:890,y:1040,w:380,h:380});
+  if (!hasSavedLayout && !items.some(item => item.kind === 'dashboard')) items.push({id:'dashboard',kind:'dashboard',x:890,y:1040,w:420,h:360});
+  if (!hasSavedLayout && !items.some(item => item.kind === 'article')) items.push({id:'articles',kind:'article',x:32,y:1460,w:520,h:360});
+  if (!hasSavedLayout && !items.some(item => item.kind === 'weather')) items.push({id:'weather',kind:'weather',x:580,y:1080,w:360,h:280});
+  if (!hasSavedLayout && !items.some(item => item.kind === 'system')) items.push({id:'system',kind:'system',x:32,y:1840,w:420,h:300});
   if(activeWorkspace!=='showcase'&&!localStorage.getItem(key))items=[];
   function save() { try { localStorage.setItem(key,JSON.stringify(items)); status.textContent = '布局已保存到此浏览器'; } catch { status.textContent = '无法保存，当前布局仅本次有效'; } }
   function switchWorkspace(id:string){if(id===activeWorkspace)return;save();if(liveAvatar){liveAvatar.destroy();liveAvatar=null;}activeWorkspace=id;key=`myrt1e-workspace-v1-${id}`;items=defaults();let loaded=false;try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(Array.isArray(saved)){loaded=true;items=saved.filter((v)=>v&&typeof v.id==='string'&&['location','quote','intro','contact','time','nowplaying','terminal','stack','dashboard','live2d','article','weather','system'].includes(v.kind)&&['x','y','w','h'].every(k=>Number.isFinite(v[k]))).slice(0,20).map(v=>({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(260,Math.min(800,v.w)),h:Math.max(250,Math.min(700,v.h))}));}}catch{}if(!loaded&&id!=='showcase')items=[];canvas.querySelectorAll('.workspace-widget').forEach(widget=>widget.remove());items.filter(i=>!i.parentId).forEach(mount);items.filter(i=>i.parentId).forEach(mount);extent();renderTabs();history.pushState({workspace:id},'',`${location.pathname}?workspace=${encodeURIComponent(id)}#main-content`);document.querySelector('.canvas-scroll')?.scrollTo({top:0,behavior:'smooth'});status.textContent=`已切换至 ${workspaceTabs.find(tab=>tab.id===id)?.name||'工作台'}`;}
