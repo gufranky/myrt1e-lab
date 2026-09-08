@@ -1,0 +1,161 @@
+<section id="main-content" class="editor" aria-label="个人工作台">
+  <header class="editor-bar"><div><span class="editor-logo">M</span><strong>Myrt1e lab</strong><span class="editor-divider">/</span><span>个人工作台</span></div><button data-reset>恢复默认布局</button></header>
+  <div class="editor-body">
+    <aside class="library"><h2>控件库 <span>02</span></h2><div class="library-search">⌕&nbsp; 搜索控件</div><p class="library-group">信息</p>
+      <button class="library-item" draggable="true" data-add="location"><span class="library-icon">⌖</span><strong>地理位置</strong><b>+</b></button>
+      <button class="library-item" draggable="true" data-add="quote"><span class="library-icon">“</span><strong>一言</strong><b>+</b></button>
+      <div class="library-note">拖入工作区以添加</div>
+    </aside>
+    <div class="workspace-shell"><div class="workspace-tab"><span>▧ &nbsp; 我的空间</span><small>拖动标题移动 · 拖动右下角缩放</small></div><div class="canvas-scroll"><div class="workspace-canvas" data-canvas><p class="canvas-empty" data-empty hidden>工作区为空<br/><small>从左侧添加你的第一个控件</small></p></div></div></div>
+  </div>
+  <footer class="editor-status"><span><i></i> 本地工作区</span><span data-save-status role="status">布局自动保存在此浏览器</span></footer>
+</section>
+
+<template id="location-widget"><div class="location-visual"><svg viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M0 130L400 40M0 30L400 155M80 0L140 180M240 0L185 180M340 0L280 180" stroke="#62625b" stroke-width="2" fill="none"/><path d="M-20 80C90 170 185 -40 275 60S380 180 430 105" stroke="#b29c59" stroke-width="18" fill="none" opacity=".35"/><circle cx="218" cy="88" r="27" fill="#ecc760" opacity=".12"/><circle cx="218" cy="88" r="7" fill="#ecc760"/><circle cx="218" cy="88" r="14" stroke="#ecc760" fill="none"/></svg><span>位置示意</span></div><div class="location-info"><div><h3>武汉 <small>Wuhan</small></h3><p>武汉大学 · 中国</p></div><span class="location-time" data-wuhan-time></span></div><div class="widget-foot">30.54° N / 114.36° E <span>UTC +08:00</span></div></template>
+<template id="quote-widget"><div class="quote-body"><span class="quote-symbol">“</span><blockquote data-quote></blockquote><p>— <span data-author></span></p></div><div class="widget-foot"><span>一言 / 本地摘句</span><button data-next-quote>换一句 ↻</button></div></template>
+
+<script>
+  type Kind = 'location' | 'quote';
+  type Item = {id:string; kind:Kind; x:number; y:number; w:number; h:number};
+  const canvas = document.querySelector<HTMLElement>('[data-canvas]')!;
+  const status = document.querySelector<HTMLElement>('[data-save-status]')!;
+  const key = 'myrt1e-workspace-v1';
+  const defaults = (): Item[] => [{id:'home',kind:'location',x:32,y:32,w:360,h:320},{id:'words',kind:'quote',x:424,y:96,w:360,h:290}];
+  let items = defaults();
+  let topLayer = 1;
+  const quotes = [['千里之行，始于足下。','《老子》'],['不积跬步，无以至千里。','《荀子·劝学》'],['山重水复疑无路，柳暗花明又一村。','陆游'],['纸上得来终觉浅，绝知此事要躬行。','陆游']];
+  try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (Array.isArray(saved)) items = saved.filter((v) => v && typeof v.id === 'string' && ['location','quote'].includes(v.kind) && ['x','y','w','h'].every(k => Number.isFinite(v[k]))).slice(0,20).map(v => ({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(260,Math.min(800,v.w)),h:Math.max(250,Math.min(700,v.h))})); } catch {}
+  function save() { try { localStorage.setItem(key,JSON.stringify(items)); status.textContent = '布局已保存到此浏览器'; } catch { status.textContent = '无法保存，当前布局仅本次有效'; } }
+  function extent() { canvas.style.minWidth = `${Math.max(820,...items.map(i=>i.x+i.w+32))}px`; canvas.style.minHeight = `${Math.max(640,...items.map(i=>i.y+i.h+32))}px`; document.querySelector<HTMLElement>('[data-empty]')!.hidden = items.length > 0; }
+  function position(el:HTMLElement,item:Item) { Object.assign(el.style,{left:`${item.x}px`,top:`${item.y}px`,width:`${item.w}px`,height:`${item.h}px`}); }
+  function clock() { document.querySelectorAll('[data-wuhan-time]').forEach(el => el.textContent = new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',hour:'2-digit',minute:'2-digit'}).format(new Date())); }
+  function mount(item:Item) {
+    const el = document.createElement('article'); el.className = 'workspace-widget'; position(el,item);
+    const head = document.createElement('div'); head.className = 'widget-head';
+    const handle = document.createElement('button'); handle.className='widget-drag'; handle.textContent=item.kind === 'location' ? '⌖  地理位置' : '“  一言'; handle.setAttribute('aria-label','移动控件：拖动或使用方向键');
+    const close=document.createElement('button'); close.className='widget-close';close.textContent='×';close.setAttribute('aria-label','移除此控件'); head.append(handle,close);
+    const content=document.createElement('div');content.className='widget-content';content.append((document.getElementById(`${item.kind}-widget`) as HTMLTemplateElement).content.cloneNode(true));
+    const resize=document.createElement('button');resize.className='widget-resize';resize.setAttribute('aria-label','调整大小：拖动或使用方向键');
+    el.append(head,content,resize);canvas.append(el);
+    close.onclick=()=>{items=items.filter(i=>i!==item);el.remove();extent();save();};
+    if(item.kind==='quote'){let n=0;const update=()=>{content.querySelector('[data-quote]')!.textContent=quotes[n][0];content.querySelector('[data-author]')!.textContent=quotes[n][1];};update();content.querySelector<HTMLButtonElement>('[data-next-quote]')!.onclick=()=>{n=(n+1)%quotes.length;update();};}
+    function bind(control:HTMLElement, resizing:boolean) {
+      control.addEventListener('pointerdown', e=>{if(e.button!==0)return;e.preventDefault();control.setPointerCapture(e.pointerId);el.style.zIndex=String(++topLayer);el.classList.add('is-active'); const start={...item},sx=e.clientX,sy=e.clientY;
+        const move=(ev:PointerEvent)=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;if(resizing){item.w=Math.min(800,Math.max(260,start.w+dx));item.h=Math.min(700,Math.max(250,start.h+dy));}else{item.x=Math.min(2000,Math.max(0,start.x+dx));item.y=Math.min(2000,Math.max(0,start.y+dy));}position(el,item);extent();};
+        const end=()=>{control.removeEventListener('pointermove',move);control.removeEventListener('pointerup',end);control.removeEventListener('pointercancel',end);el.classList.remove('is-active');save();};control.addEventListener('pointermove',move);control.addEventListener('pointerup',end);control.addEventListener('pointercancel',end);
+      });
+      control.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const dx=e.key==='ArrowLeft'?-8:e.key==='ArrowRight'?8:0,dy=e.key==='ArrowUp'?-8:e.key==='ArrowDown'?8:0;if(resizing){item.w=Math.max(260,Math.min(800,item.w+dx));item.h=Math.max(250,Math.min(700,item.h+dy));}else{item.x=Math.max(0,Math.min(2000,item.x+dx));item.y=Math.max(0,Math.min(2000,item.y+dy));}position(el,item);extent();save();});
+    }
+    bind(handle,false);bind(resize,true);clock();
+  }
+  function add(kind:Kind,x=40+items.length*24,y=40+items.length*24){if(items.length>=20){status.textContent='最多放置 20 个控件';return;}const item={id:crypto.randomUUID(),kind,x:Math.max(0,x),y:Math.max(0,y),w:360,h:kind==='location'?320:290};items.push(item);mount(item);extent();save();}
+  document.querySelectorAll<HTMLButtonElement>('[data-add]').forEach(button=>{button.onclick=()=>add(button.dataset.add as Kind);button.ondragstart=e=>{e.dataTransfer?.setData('text/plain',button.dataset.add!);};});
+  canvas.ondragover=e=>{e.preventDefault();};canvas.ondrop=e=>{e.preventDefault();const kind=e.dataTransfer?.getData('text/plain');if(kind==='location'||kind==='quote'){const r=canvas.getBoundingClientRect();add(kind,e.clientX-r.left,e.clientY-r.top);}};
+  document.querySelector<HTMLButtonElement>('[data-reset]')!.onclick=()=>{canvas.querySelectorAll('.workspace-widget').forEach(el=>el.remove());items=defaults();items.forEach(mount);extent();save();};
+  items.forEach(mount);extent();window.setInterval(clock,30000);
+</script>
+
+<style>
+  .editor{background:#161719;color:#dbdbd5;min-height:100svh;font-family:Inter,'Segoe UI','Microsoft YaHei',sans-serif;display:flex;flex-direction:column}.editor button{cursor:pointer}.editor button:focus-visible{outline:2px solid #e8c362;outline-offset:-2px}.editor-bar{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#222325;border-bottom:1px solid #393a3b;font-size:13px}.editor-bar>div{display:flex;align-items:center;gap:15px}.editor-logo{background:#e8c362;color:#262626;padding:5px 8px;border-radius:4px;font-weight:800}.editor-divider{color:#737475}.editor-bar button{background:#303133;border:1px solid #464749;border-radius:4px;color:#ddd;padding:9px 12px}.editor-body{display:flex;flex:1;min-height:calc(100svh - 96px)}.library{position:relative;width:230px;flex-shrink:0;border-right:1px solid #363739;background:#202123;padding:23px 14px}.library h2{font-size:14px;margin:0 0 10px;display:flex;justify-content:space-between}.library h2 span{font:11px monospace;color:#a4a59e}.library>p{font-size:12px;color:#a4a59e;margin-bottom:25px}.library-item{width:100%;display:flex;align-items:center;gap:11px;padding:15px 10px;margin-bottom:10px;background:#2a2b2d;border:1px solid #3f4042;border-radius:5px;color:#e8e8e2;text-align:left}.library-item:hover{border-color:#b79b50;background:#31312b}.library-icon{font-size:26px;color:#e7c164;width:28px;text-align:center}.library-item strong{display:block;font-size:13px}.library-item small{display:block;font-size:11px;margin-top:6px;color:#aeb0a8}.library-item b{margin-left:auto;color:#b8b9b1}.library-note{margin-top:65px;padding:12px 4px;border-top:1px solid #393a3c;font-size:12px;line-height:1.9;color:#92958d}.workspace-shell{min-width:0;flex:1;display:flex;flex-direction:column}.workspace-tab{height:43px;display:flex;align-items:center;justify-content:space-between;background:#252628;border-bottom:1px solid #3a3b3d;font-size:12px}.workspace-tab>span{height:100%;padding:13px 22px;border-top:2px solid #e7c164;background:#191a1c}.workspace-tab small{padding-right:20px;color:#a2a49d}.canvas-scroll{height:calc(100svh - 139px);min-height:560px;overflow:auto;flex:1}.workspace-canvas{position:relative;background-color:#191a1c;background-image:radial-gradient(#3e3f40 .8px,transparent .8px);background-size:20px 20px}.canvas-empty{position:absolute;left:30px;top:100px;text-align:center;width:700px;color:#d5c697;font-size:20px}.canvas-empty small{display:block;font-size:13px;color:#93968c;margin-top:12px}.editor-status{display:flex;justify-content:space-between;padding:9px 20px;background:#242526;border-top:1px solid #3a3b3c;font-size:11px;color:#a7aaa1}.editor-status i{display:inline-block;width:6px;height:6px;background:#e7c164;border-radius:50%;margin-right:7px}
+  .workspace-canvas :global(.workspace-widget){position:absolute;display:flex;flex-direction:column;background:#27282a;border:1px solid #51524e;border-radius:7px;box-shadow:0 12px 28px #0004;overflow:hidden}.workspace-canvas :global(.workspace-widget.is-active){border-color:#e7c164;box-shadow:0 0 0 1px #e7c16455,0 15px 35px #0006}.workspace-canvas :global(.widget-head){height:39px;flex-shrink:0;display:flex;background:#303133;border-bottom:1px solid #464743}.workspace-canvas :global(.widget-drag){flex:1;text-align:left;padding:0 13px;color:#e3dac1;background:none;border:0;cursor:grab;touch-action:none;font-size:12px}.workspace-canvas :global(.widget-close){width:40px;border:0;background:none;color:#aaa;font-size:22px}.workspace-canvas :global(.widget-close:hover){color:#fff;background:#48413c}.workspace-canvas :global(.widget-content){flex:1;min-height:0;display:flex;flex-direction:column;overflow:auto}.workspace-canvas :global(.widget-resize){position:absolute;bottom:2px;right:2px;width:24px;height:24px;touch-action:none;cursor:nwse-resize;border:0;background:linear-gradient(135deg,transparent 54%,#c4ae69 55% 60%,transparent 61% 70%,#c4ae69 71% 76%,transparent 77%);opacity:.8}.workspace-canvas :global(.location-visual){flex:1;min-height:70px;position:relative;background:#202322;overflow:hidden}.workspace-canvas :global(.location-visual svg){width:100%;height:100%;position:absolute}.workspace-canvas :global(.location-visual>span){position:absolute;bottom:9px;left:13px;color:#b6b6a6;font-size:10px}.workspace-canvas :global(.location-info){display:flex;justify-content:space-between;align-items:center;padding:15px}.workspace-canvas :global(h3){margin:0;font-size:24px;font-weight:600}.workspace-canvas :global(h3 small){font-size:13px;font-weight:400;color:#b5b7ac}.workspace-canvas :global(.location-info p){margin:5px 0 0;font-size:12px;color:#a9aca2}.workspace-canvas :global(.location-time){color:#ebcc76;font:20px monospace}.workspace-canvas :global(.widget-foot){display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:38px;padding:6px 27px 6px 15px;border-top:1px solid #3c3e3b;color:#a7ab9e;font:10px monospace}.workspace-canvas :global(.widget-foot button){padding:7px 8px;border:1px solid #555549;background:#35362f;color:#e8d59f;border-radius:4px;font:12px sans-serif}.workspace-canvas :global(.quote-body){flex:1;padding:18px 24px;display:flex;flex-direction:column;justify-content:center}.workspace-canvas :global(.quote-symbol){font:45px Georgia;color:#e9c86f;height:32px}.workspace-canvas :global(blockquote){font-size:clamp(17px,2vw,23px);line-height:1.6;margin:10px 0;color:#eae5d6}.workspace-canvas :global(.quote-body p){margin:8px 0 0;color:#a8ab9f;font-size:12px;text-align:right}
+  @media(max-width:700px){.editor-body{flex-direction:column}.library{width:100%;padding:12px;border-right:0;border-bottom:1px solid #444;display:flex;flex-wrap:wrap;gap:8px}.library h2{width:100%;margin:0}.library>p,.library-note{display:none}.library-item{width:calc(50% - 4px);margin:0;padding:9px}.workspace-tab small{display:none}.editor-bar{padding:0 12px}.editor-bar>div{gap:8px}.editor-bar>div>span:last-child{display:none}.editor-status{gap:12px}.canvas-scroll{min-height:550px}}
+</style>
+
+<style>
+  /* Yuimi-inspired translucent surfaces, with the local graphite/gold palette. */
+  .editor {
+    --edge: rgba(244, 229, 181, .25);
+    --gold: #ebcb78;
+    background: radial-gradient(ellipse at 12% 15%, #e4bd4e16, transparent 42%),
+      radial-gradient(ellipse at 80% 70%, #ffffff09, transparent 50%), #171819;
+    color: #e8e5dc;
+  }
+  .editor-bar {
+    background: linear-gradient(120deg, #ffffff09, #ecd08408), #272829d9;
+    border-bottom-color: var(--edge);
+    box-shadow: inset 0 1px #ffffff18;
+  }
+  .editor-bar strong { font-family: 'Nunito', sans-serif; font-size: 17px; }
+  .editor-logo {
+    border-radius: 9px; color: #584722;
+    background: linear-gradient(145deg, #fff0ba, #d8b661);
+    border: 1px solid #fff4ccab; box-shadow: 0 3px 12px #d9ad4526;
+  }
+  .editor-bar button {
+    border-radius: 999px; color: #eedda9; border-color: var(--edge);
+    background: linear-gradient(135deg, #ffffff13, #e4be5910);
+    box-shadow: inset 0 1px #ffffff19;
+  }
+  .editor-bar button:hover { background-color: #d9ad451c; }
+  .library { background: #272829a3; border-color: var(--edge); padding-top: 26px; }
+  .library h2 { color: #f2dfaa; letter-spacing: .02em; }
+  .library h2 span { border-radius: 6px; padding: 3px 6px; background: #f2d78b12; color: #cfbd8c; }
+  .library-item {
+    border-radius: 12px; border-color: #efdfb52b;
+    background: linear-gradient(130deg, #ffffff0d, #e9c46608);
+    box-shadow: inset 0 1px #ffffff15, 0 6px 15px #00000015;
+    transition: border-color 160ms, background-color 160ms;
+  }
+  .library-item:hover { background-color: #ecd08413; border-color: #ebcb7880; }
+  .library-icon { border-radius: 10px; background: #eed58d13; border: 1px solid #e4c67733; padding: 5px; width: 36px; }
+  .library-note { border-top-style: dashed; border-color: #d4c49430; color: #a7a599; }
+  .workspace-tab { background: #292b2ca6; border-color: #e6d2a126; }
+  .workspace-tab>span {
+    margin: 5px 0 0 8px; height: calc(100% - 5px); padding: 9px 20px;
+    border: 1px solid #eed38c42; border-bottom: none; border-radius: 9px 9px 0 0;
+    color: #efd996; background: #ffffff09;
+  }
+  .workspace-canvas {
+    background-color: transparent;
+    background-image: radial-gradient(#e9dbb229 .8px, transparent .8px),
+      radial-gradient(ellipse at 40% 10%, #e5bc5010, transparent 65%);
+    background-size: 24px 24px, 100% 100%;
+  }
+  .workspace-canvas :global(.workspace-widget) {
+    border: 1px solid #f5e5b94d; border-radius: 13px;
+    background: linear-gradient(135deg, #ffffff08, #efd48b05), #292b2cdb;
+    box-shadow: inset 0 0 0 1px #ffffff08, 0 16px 36px #00000035;
+    backdrop-filter: blur(8px);
+  }
+  .workspace-canvas :global(.widget-head) {
+    height: 43px; background: linear-gradient(110deg, #ffffff12, #e3bd5310);
+    border-bottom: 1px solid #f2dfae26;
+    box-shadow: inset 0 1px #ffffff20;
+  }
+  .workspace-canvas :global(.widget-drag) { color: #f0daa3; font-weight: 600; }
+  .workspace-canvas :global(.widget-close) { color: #c5bfae; }
+  .workspace-canvas :global(.widget-close:hover) { background: #e6c56e20; }
+  .workspace-canvas :global(.location-visual) {
+    margin: 10px 10px 0; border-radius: 8px;
+    border: 1px solid #dcca9724; background: #20232290;
+  }
+  .workspace-canvas :global(.location-info h3) { color: #f3e6c3; }
+  .workspace-canvas :global(.location-time) { font-family: 'Quicksand', sans-serif; font-weight: 600; }
+  .workspace-canvas :global(.widget-foot) { border-color: #d9c89926; background: #ffffff03; }
+  .workspace-canvas :global(.widget-foot button) {
+    border-radius: 999px; border-color: #ebcf8840; color: #eed9a2;
+    background: linear-gradient(135deg, #ffffff0c, #e9c3660f);
+  }
+  .workspace-canvas :global(.widget-foot button:hover) { background-color: #e9c36620; }
+  .workspace-canvas :global(.quote-body) { background: radial-gradient(ellipse at 85% 0%, #efd07810, transparent 70%); }
+  .workspace-canvas :global(.quote-symbol) { color: #e8cb7b; }
+  .workspace-canvas :global(.widget-resize) { opacity: .5; }
+  .workspace-canvas :global(.widget-resize:hover) { opacity: 1; }
+  .editor-status { border-color: var(--edge); background: #262829cc; }
+  @media(max-width:700px) { .library { padding: 12px; } }
+</style>
+
+<style>
+  /* Compact Unreal-style palette: hierarchy first, supporting copy only when useful. */
+  .library { padding: 18px 10px; }
+  .library h2 { padding: 0 6px 12px; margin-bottom: 0; border-bottom: 1px solid #ead38c26; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+  .library-search { margin: 12px 0 17px; padding: 8px 9px; border: 1px solid #ffffff16; border-radius: 3px; color: #888b84; background: #11121466; font: 11px 'IBM Plex Mono', monospace; }
+  .library-group { margin: 0 6px 6px; color: #9d9e95; font: 10px 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+  .library-item { display: grid; grid-template-columns: 28px minmax(0,1fr) 16px; align-items: center; gap: 9px; min-height: 42px; margin: 0 0 3px; padding: 7px 8px; border: 1px solid transparent; border-radius: 3px; background: transparent; box-shadow: none; }
+  .library-item:hover { border-color: #e7c16455; background: #e7c16412; }
+  .library-item strong { overflow: hidden; color: #deded7; font-size: 12px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+  .library-icon { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 1px solid #e7c16448; border-radius: 3px; color: #e7c164; background: #e7c1640e; font-size: 18px; }
+  .library-item b { color: #8f918a; font-size: 13px; font-weight: 400; }
+  .library-note { margin-top: 25px; padding: 12px 6px 0; border-top: 1px dashed #d4c49430; color: #777a73; font: 10px 'IBM Plex Mono', monospace; }
+  @media(max-width:700px) { .library { padding: 10px; } .library-search { display: none; } .library-group { width: 100%; margin: 0 2px 2px; } .library-item { flex: 1 1 calc(50% - 4px); min-height: 39px; } .library-note { display: none; } }
+</style>
