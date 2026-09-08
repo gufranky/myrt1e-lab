@@ -97,6 +97,7 @@ import "../styles/workspace.css";
   }
   function clock() { document.querySelectorAll<HTMLElement>('[data-wuhan-time]').forEach(el => { const timeZone = el.dataset.timezone || 'Asia/Shanghai'; el.textContent = new Intl.DateTimeFormat('en-GB',{timeZone,hour:'2-digit',minute:'2-digit'}).format(new Date()); }); }
   function mount(item:Item) {
+    item.w=Math.max(180,item.w);item.h=Math.max(140,item.h);
     const el = document.createElement('article'); el.className = `workspace-widget${item.parentId ? ' workspace-child' : ''}`; el.dataset.itemId=item.id; el.dataset.itemKind=item.kind; position(el,item);
     // Keep the canvas as a valid drop surface even when a widget is underneath the pointer.
     el.addEventListener('dragover',event=>{event.preventDefault();if(event.dataTransfer)event.dataTransfer.dropEffect='copy';},true);
