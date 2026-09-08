@@ -94,6 +94,12 @@
 .editor .time-body{flex:1;padding:22px}.editor .time-row{display:grid;grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr);gap:14px;margin-top:22px}.editor .time-row>div{display:flex;flex-direction:column;gap:8px}.editor .time-row>div:last-child{text-align:right}
 .editor .time-row i{background:#ffffff13}.editor .time-row strong{font:600 clamp(19px,7cqw,30px) 'Quicksand',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.7px;color:#eee6d1}
 .editor .time-row :is(small,em,b){font:10px/1.5 'Segoe UI',sans-serif;overflow-wrap:anywhere;color:#a5a8af}.editor .time-row b{color:#e3c784}
+.editor .workspace-widget[data-item-kind="time"] .widget-head{height:clamp(28px,12cqw,43px)}
+.editor .workspace-widget[data-item-kind="time"] .widget-drag{padding-inline:clamp(8px,4cqw,16px);font-size:clamp(9px,3cqw,11px)}
+.editor .workspace-widget[data-item-kind="time"] .widget-close{width:clamp(28px,11cqw,42px);font-size:clamp(15px,5cqw,20px)}
+.editor .workspace-widget[data-item-kind="time"] .widget-foot{min-height:clamp(26px,10cqw,35px);padding:clamp(5px,2.5cqw,8px) clamp(10px,5cqw,24px) clamp(5px,2.5cqw,8px) clamp(8px,4cqw,18px);font-size:clamp(8px,2.5cqw,10px)}
+.editor .workspace-widget[data-item-kind="time"] .time-body{padding:clamp(10px,6cqw,22px);min-height:0;overflow:hidden}
+.editor .workspace-widget[data-item-kind="time"] .time-row{gap:clamp(6px,4cqw,14px);margin-top:clamp(8px,6cqw,22px)}
 .editor .nowplaying-body{flex:1;padding:20px 24px 16px;display:flex;flex-direction:column;background:radial-gradient(ellipse at 80% 20%,#e7c16408,transparent 65%)}
 .media-label{display:flex;justify-content:space-between;align-items:center;color:#aaaeb6;font-size:11px}
 .media-badge{border:1px solid #ffffff17;padding:2px 7px;border-radius:20px;font-size:9px;color:#adb0b5}
