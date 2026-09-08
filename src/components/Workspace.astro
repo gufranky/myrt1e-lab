@@ -77,7 +77,7 @@ import "../styles/workspace.css";
   function mount(item:Item) {
     const el = document.createElement('article'); el.className = `workspace-widget${item.parentId ? ' workspace-child' : ''}`; el.dataset.itemId=item.id; el.dataset.itemKind=item.kind; position(el,item);
     const head = document.createElement('div'); head.className = 'widget-head';
-    const handle = document.createElement('button'); handle.className='widget-drag'; handle.textContent=item.kind === 'location' ? '⌖  地理位置' : item.kind === 'quote' ? '“  一言' : item.kind === 'intro' ? '◎  个人简介' : item.kind === 'contact' ? '↗  联系我' : item.kind === 'time' ? '◷  时间' : item.kind === 'nowplaying' ? '♫  正在播放' : item.kind === 'terminal' ? '›_  终端' : item.kind === 'stack' ? '▦  技术栈' : item.kind === 'dashboard' ? '◒  开发仪表盘' : '◉  Live Avatar'; handle.setAttribute('aria-label','移动控件：拖动或使用方向键');
+    const handle = document.createElement('button'); handle.className='widget-drag'; handle.textContent=item.kind === 'location' ? '⌖  地理位置' : item.kind === 'quote' ? '“  一言' : item.kind === 'intro' ? '◎  个人简介' : item.kind === 'contact' ? '↗  联系我' : item.kind === 'time' ? '◷  时间' : item.kind === 'nowplaying' ? '♫  正在播放' : item.kind === 'terminal' ? '›_  终端' : item.kind === 'stack' ? '▦  技术栈' : item.kind === 'dashboard' ? '◒  开发仪表盘' : item.kind === 'article' ? '☷  个人文章' : '◉  角色视口'; handle.setAttribute('aria-label','移动控件：拖动或使用方向键');
     const close=document.createElement('button'); close.className='widget-close';close.textContent='×';close.setAttribute('aria-label','移除此控件'); head.append(handle,close);
     const content=document.createElement('div');content.className='widget-content';content.append((document.getElementById(`${item.kind}-widget`) as HTMLTemplateElement).content.cloneNode(true));
     const resize=document.createElement('button');resize.className='widget-resize';resize.setAttribute('aria-label','调整大小：拖动或使用方向键');
@@ -187,7 +187,7 @@ import "../styles/workspace.css";
     const columns=width>=1180?3:width>=780?2:1;
     const gap=20, padding=24, w=Math.min(520,(width-padding*2-gap*(columns-1))/columns);
     const heights=Array(columns).fill(padding);
-    const order:Kind[]=['intro','nowplaying','dashboard','live2d','location','time','stack','quote','terminal','contact'];
+    const order:Kind[]=['intro','article','nowplaying','dashboard','live2d','location','time','stack','quote','terminal','contact'];
     [...items].filter(i=>!i.parentId).sort((a,b)=>order.indexOf(a.kind)-order.indexOf(b.kind)).forEach(item=>{
       const column=heights.indexOf(Math.min(...heights));
       item.x=padding+column*(w+gap);item.y=heights[column];item.w=w;
