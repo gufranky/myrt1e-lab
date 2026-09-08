@@ -1,11 +1,12 @@
 <section id="main-content" class="editor" aria-label="个人工作台">
   <header class="editor-bar"><div><span class="editor-logo">M</span><strong>Myrt1e lab</strong><span class="editor-divider">/</span><span>个人工作台</span></div><button data-reset>恢复默认布局</button></header>
   <div class="editor-body">
-    <aside class="library"><h2>控件库 <span>04</span></h2><div class="library-search">⌕&nbsp; 搜索控件</div><p class="library-group">信息</p>
+    <aside class="library"><h2>控件库 <span>05</span></h2><div class="library-search">⌕&nbsp; 搜索控件</div><p class="library-group">信息</p>
       <button class="library-item" draggable="true" data-add="location"><span class="library-icon">⌖</span><strong>地理位置</strong><b>+</b></button>
       <button class="library-item" draggable="true" data-add="quote"><span class="library-icon">“</span><strong>一言</strong><b>+</b></button>
       <button class="library-item" draggable="true" data-add="intro"><span class="library-icon">◎</span><strong>自我介绍</strong><b>+</b></button>
       <button class="library-item" draggable="true" data-add="contact"><span class="library-icon">↗</span><strong>联系我</strong><b>+</b></button>
+      <button class="library-item" draggable="true" data-add="time"><span class="library-icon">◷</span><strong>时间</strong><b>+</b></button>
       <div class="library-note">拖入工作区以添加</div>
     </aside>
     <div class="workspace-shell"><div class="workspace-tab"><span>▧ &nbsp; 我的空间</span><small>拖动标题移动 · 拖动右下角缩放</small></div><div class="canvas-scroll"><div class="workspace-canvas" data-canvas><p class="canvas-empty" data-empty hidden>工作区为空<br/><small>从左侧添加你的第一个控件</small></p></div></div></div>
@@ -18,21 +19,24 @@
 <template id="intro-widget"><div class="intro-body"><div class="intro-profile"><div class="intro-avatar" data-initials="GF"><img data-profile-avatar src="https://github.com/gufranky.png?size=256" alt="gufranky 的 GitHub 头像" loading="lazy" /></div><div><span class="intro-eyebrow">PLAYER PROFILE / 01</span><h3>gufranky</h3><p>武汉大学 · 大四</p></div></div><div class="intro-copy"><p>我是来自武汉大学的大四学生，主要研究计算机图形学（渲染方向）、游戏开发与 AI。</p><p>目前专注于 UE5 渲染开发与 CS 游戏插件开发，很多项目都源于兴趣使然。</p><p>欢迎与我沟通。</p></div><div class="intro-children" data-child-drop><span>将子控件拖到这里</span></div></div><div class="widget-foot"><span>个人简介 / PROFILE</span><span>GITHUB · GUFRANKY</span></div></template>
 <template id="contact-widget"><div class="contact-body"><span class="intro-eyebrow">CONTACT CHANNELS / 03</span><h3>联系我</h3><div class="contact-links"><a href="https://space.bilibili.com/186605312" target="_blank" rel="noreferrer"><svg class="contact-icon" viewBox="0 0 24 24" aria-label="哔哩哔哩"><path d="M8 5 6 2M16 5l2-3"/><rect x="3" y="5" width="18" height="15" rx="4"/><path d="M8 11v3M16 11v3M9 17h6"/></svg><strong>哔哩哔哩</strong><small>186605312</small></a><a href="https://github.com/gufranky" target="_blank" rel="noreferrer"><svg class="contact-icon" viewBox="0 0 24 24" aria-label="GitHub"><path d="M12 2.5a9.5 9.5 0 0 0-3 18.51c.48.09.65-.21.65-.46v-1.7c-2.66.58-3.22-1.13-3.22-1.13-.44-1.12-1.08-1.42-1.08-1.42-.88-.6.07-.59.07-.59.97.07 1.48 1 1.48 1 .87 1.48 2.28 1.05 2.84.8.09-.62.34-1.05.62-1.29-2.12-.24-4.35-1.06-4.35-4.72 0-1.04.37-1.89.98-2.56-.1-.24-.43-1.21.09-2.52 0 0 .8-.26 2.62.98a9.1 9.1 0 0 1 4.77 0c1.82-1.24 2.62-.98 2.62-.98.52 1.31.19 2.28.09 2.52.61.67.98 1.52.98 2.56 0 3.67-2.23 4.48-4.36 4.72.34.29.65.85.65 1.72v2.54c0 .25.17.55.66.46A9.5 9.5 0 0 0 12 2.5Z"/></svg><strong>GitHub</strong><small>gufranky</small></a><a href="https://steamcommunity.com/id/frankygu/" target="_blank" rel="noreferrer"><svg class="contact-icon" viewBox="0 0 24 24" aria-label="Steam"><circle cx="12" cy="12" r="9"/><circle cx="16.5" cy="8" r="2.5"/><circle cx="8" cy="15.5" r="2.5"/><path d="m10 14 4.6-4.2"/></svg><strong>Steam</strong><small>frankygu</small></a></div></div><div class="widget-foot"><span>联系我 / CHANNELS</span><span>OPEN LINK ↗</span></div></template>
 
+<template id="time-widget"><div class="time-body"><span class="intro-eyebrow">TIME STREAM / 02</span><div class="time-row"><div><small>GUFRANKY / 武汉</small><strong data-home-time>--:--</strong><em>Asia/Shanghai</em></div><i></i><div><small>VISITOR / 访客</small><strong data-visitor-time>--:--</strong><em data-visitor-zone>检测时区中…</em></div></div></div><div class="widget-foot"><span>时间 / TIMEZONE</span><span data-time-delta>LOCAL SYNC</span></div></template>
+
 <script>
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
-  type Kind = 'location' | 'quote' | 'intro' | 'contact';
+  type Kind = 'location' | 'quote' | 'intro' | 'contact' | 'time';
   type Item = {id:string; kind:Kind; x:number; y:number; w:number; h:number; parentId?:string};
   const canvas = document.querySelector<HTMLElement>('[data-canvas]')!;
   const status = document.querySelector<HTMLElement>('[data-save-status]')!;
   const key = 'myrt1e-workspace-v1';
-  const defaults = (): Item[] => [{id:'home',kind:'location',x:32,y:32,w:360,h:320},{id:'words',kind:'quote',x:424,y:96,w:360,h:290},{id:'profile',kind:'intro',x:220,y:430,w:440,h:310},{id:'contact',kind:'contact',x:690,y:450,w:390,h:230}];
+  const defaults = (): Item[] => [{id:'home',kind:'location',x:32,y:32,w:360,h:320},{id:'words',kind:'quote',x:424,y:96,w:360,h:290},{id:'profile',kind:'intro',x:220,y:430,w:440,h:310},{id:'contact',kind:'contact',x:690,y:450,w:390,h:230},{id:'time',kind:'time',x:690,y:710,w:390,h:210}];
   let items = defaults();
   let topLayer = 1;
   const quotes = [['千里之行，始于足下。','《老子》'],['不积跬步，无以至千里。','《荀子·劝学》'],['山重水复疑无路，柳暗花明又一村。','陆游'],['纸上得来终觉浅，绝知此事要躬行。','陆游']];
-  try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (Array.isArray(saved)) items = saved.filter((v) => v && typeof v.id === 'string' && ['location','quote','intro','contact'].includes(v.kind) && ['x','y','w','h'].every(k => Number.isFinite(v[k]))).slice(0,20).map(v => ({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(260,Math.min(800,v.w)),h:Math.max(250,Math.min(700,v.h))})); } catch {}
+  try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (Array.isArray(saved)) items = saved.filter((v) => v && typeof v.id === 'string' && ['location','quote','intro','contact','time'].includes(v.kind) && ['x','y','w','h'].every(k => Number.isFinite(v[k]))).slice(0,20).map(v => ({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(260,Math.min(800,v.w)),h:Math.max(250,Math.min(700,v.h))})); } catch {}
   if (!items.some(item => item.kind === 'intro')) items.push({id:'profile',kind:'intro',x:220,y:430,w:440,h:310});
   if (!items.some(item => item.kind === 'contact')) items.push({id:'contact',kind:'contact',x:690,y:450,w:390,h:230});
+  if (!items.some(item => item.kind === 'time')) items.push({id:'time',kind:'time',x:690,y:710,w:390,h:210});
   function save() { try { localStorage.setItem(key,JSON.stringify(items)); status.textContent = '布局已保存到此浏览器'; } catch { status.textContent = '无法保存，当前布局仅本次有效'; } }
   function extent() { canvas.style.minWidth = `${Math.max(820,...items.map(i=>i.x+i.w+32))}px`; canvas.style.minHeight = `${Math.max(640,...items.map(i=>i.y+i.h+32))}px`; document.querySelector<HTMLElement>('[data-empty]')!.hidden = items.length > 0; }
   function position(el:HTMLElement,item:Item) { Object.assign(el.style,{left:`${item.x}px`,top:`${item.y}px`,width:`${item.w}px`,height:`${item.h}px`}); }
@@ -40,7 +44,7 @@
   function mount(item:Item) {
     const el = document.createElement('article'); el.className = `workspace-widget${item.parentId ? ' workspace-child' : ''}`; el.dataset.itemId=item.id; el.dataset.itemKind=item.kind; position(el,item);
     const head = document.createElement('div'); head.className = 'widget-head';
-    const handle = document.createElement('button'); handle.className='widget-drag'; handle.textContent=item.kind === 'location' ? '⌖  地理位置' : item.kind === 'quote' ? '“  一言' : item.kind === 'intro' ? '◎  个人简介' : '↗  联系我'; handle.setAttribute('aria-label','移动控件：拖动或使用方向键');
+    const handle = document.createElement('button'); handle.className='widget-drag'; handle.textContent=item.kind === 'location' ? '⌖  地理位置' : item.kind === 'quote' ? '“  一言' : item.kind === 'intro' ? '◎  个人简介' : item.kind === 'contact' ? '↗  联系我' : '◷  时间'; handle.setAttribute('aria-label','移动控件：拖动或使用方向键');
     const close=document.createElement('button'); close.className='widget-close';close.textContent='×';close.setAttribute('aria-label','移除此控件'); head.append(handle,close);
     const content=document.createElement('div');content.className='widget-content';content.append((document.getElementById(`${item.kind}-widget`) as HTMLTemplateElement).content.cloneNode(true));
     const resize=document.createElement('button');resize.className='widget-resize';resize.setAttribute('aria-label','调整大小：拖动或使用方向键');
@@ -68,6 +72,9 @@
       const avatar=content.querySelector<HTMLImageElement>('[data-profile-avatar]');
       if(avatar) avatar.onerror=()=>{avatar.hidden=true;};
     }
+    if(item.kind==='time'){
+      const home=content.querySelector<HTMLElement>('[data-home-time]');const visitor=content.querySelector<HTMLElement>('[data-visitor-time]');const visitorZone=content.querySelector<HTMLElement>('[data-visitor-zone]');const delta=content.querySelector<HTMLElement>('[data-time-delta]');const homeZone='Asia/Shanghai';let visitorTimezone=Intl.DateTimeFormat().resolvedOptions().timeZone || 'LOCAL';const render=()=>{const now=new Date();if(home)home.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:homeZone,hour:'2-digit',minute:'2-digit'}).format(now);if(visitor)visitor.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:visitorTimezone,hour:'2-digit',minute:'2-digit'}).format(now);if(visitorZone)visitorZone.textContent=visitorTimezone;if(delta)delta.textContent=visitorTimezone===homeZone?'SAME ZONE':'LIVE OFFSET';};render();fetch('/api/location').then(response=>response.ok?response.json():null).then(data=>{if(data?.timezone?.id)visitorTimezone=data.timezone.id;render();}).catch(()=>{});window.setInterval(render,30000);
+    }
     if(item.kind==='contact'){
       const brands=['bilibili','github','steam'];
       content.querySelectorAll<SVGElement>('.contact-icon').forEach((old,index)=>{const img=document.createElement('img');img.className='contact-icon';img.src=`https://cdn.simpleicons.org/${brands[index]}/e7c164`;img.alt=old.getAttribute('aria-label') || brands[index];img.loading='lazy';old.replaceWith(img);});
@@ -81,10 +88,11 @@
     }
     bind(handle,false);bind(resize,true);clock();
   }
-  function add(kind:Kind,x=40+items.length*24,y=40+items.length*24,parentId?:string){if(items.length>=20){status.textContent='最多放置 20 个控件';return;}const item={id:crypto.randomUUID(),kind,x:Math.max(0,x),y:Math.max(0,y),w:kind==='intro'?440:kind==='contact'?390:360,h:kind==='location'?320:kind==='intro'?310:kind==='contact'?230:290,parentId};items.push(item);mount(item);extent();save();}
+  function add(kind:Kind,x=40+items.length*24,y=40+items.length*24,parentId?:string){if(items.length>=20){status.textContent='最多放置 20 个控件';return;}const item={id:crypto.randomUUID(),kind,x:Math.max(0,x),y:Math.max(0,y),w:kind==='intro'?440:kind==='contact'?390:kind==='time'?390:360,h:kind==='location'?320:kind==='intro'?310:kind==='contact'?230:kind==='time'?210:290,parentId};items.push(item);mount(item);extent();save();}
   document.querySelectorAll<HTMLButtonElement>('[data-add]').forEach(button=>{button.onclick=()=>add(button.dataset.add as Kind);button.ondragstart=e=>{e.dataTransfer?.setData('text/plain',button.dataset.add!);};});
-  canvas.ondragover=e=>{e.preventDefault();};canvas.ondrop=e=>{e.preventDefault();const kind=e.dataTransfer?.getData('text/plain');if(kind==='location'||kind==='quote'||kind==='intro'||kind==='contact'){const target=(e.target as HTMLElement).closest<HTMLElement>('[data-item-kind="intro"]');const r=canvas.getBoundingClientRect();const parentId=kind==='contact'&&target ? target.dataset.itemId : undefined;add(kind,e.clientX-r.left,e.clientY-r.top,parentId);if(parentId)status.textContent='联系我已嵌入个人简介';}};
+  canvas.ondragover=e=>{e.preventDefault();};canvas.ondrop=e=>{e.preventDefault();const kind=e.dataTransfer?.getData('text/plain');if(kind==='location'||kind==='quote'||kind==='intro'||kind==='contact'||kind==='time'){const target=(e.target as HTMLElement).closest<HTMLElement>('[data-item-kind="intro"]');const r=canvas.getBoundingClientRect();const parentId=kind==='contact'&&target ? target.dataset.itemId : undefined;add(kind,e.clientX-r.left,e.clientY-r.top,parentId);if(parentId)status.textContent='联系我已嵌入个人简介';}};
   document.querySelector<HTMLButtonElement>('[data-reset]')!.onclick=()=>{canvas.querySelectorAll('.workspace-widget').forEach(el=>el.remove());items=defaults();items.forEach(mount);extent();save();};
+  const nativeFetch=window.fetch.bind(window);window.fetch=(input,init)=>{const url=typeof input==='string'?input:input instanceof URL?input.toString():input.url;if(url.includes('ipwho.is/')||url.includes('ipinfo.io/json'))return nativeFetch('/api/location',init);return nativeFetch(input,init);};
   items.forEach(mount);extent();window.setInterval(clock,30000);
 </script>
 
@@ -198,6 +206,13 @@
   .workspace-canvas :global(.contact-icon) { width: 22px; height: 22px; color: #e7c164; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; object-fit: contain; }
   .workspace-canvas :global(.contact-links strong) { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
   .workspace-canvas :global(.contact-links small) { overflow: hidden; color: #96998f; font: 9px 'IBM Plex Mono', monospace; text-overflow: ellipsis; white-space: nowrap; }
+  .workspace-canvas :global(.time-body) { flex: 1; padding: 18px 20px; background: radial-gradient(ellipse at 50% 0%, #e8c86612, transparent 70%); }
+  .workspace-canvas :global(.time-row) { display: grid; grid-template-columns: 1fr 1px 1fr; align-items: center; gap: 15px; margin-top: 18px; }
+  .workspace-canvas :global(.time-row > div) { display: flex; flex-direction: column; gap: 5px; }
+  .workspace-canvas :global(.time-row > div:last-child) { text-align: right; align-items: flex-end; }
+  .workspace-canvas :global(.time-row small), .workspace-canvas :global(.time-row em) { color: #9d9f96; font: 9px 'IBM Plex Mono', monospace; }
+  .workspace-canvas :global(.time-row strong) { color: #f0d486; font: 700 31px 'Quicksand', sans-serif; letter-spacing: .03em; }
+  .workspace-canvas :global(.time-row > i) { height: 57px; background: #e7c16455; }
   .workspace-canvas :global(.quote-symbol) { color: #e8cb7b; }
   .workspace-canvas :global(.widget-resize) { opacity: .5; }
   .workspace-canvas :global(.widget-resize:hover) { opacity: 1; }
