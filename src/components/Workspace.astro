@@ -64,6 +64,10 @@
       const avatar=content.querySelector<HTMLImageElement>('[data-profile-avatar]');
       if(avatar) avatar.onerror=()=>{avatar.hidden=true;};
     }
+    if(item.kind==='contact'){
+      const brands=['bilibili','github','steam'];
+      content.querySelectorAll<SVGElement>('.contact-icon').forEach((old,index)=>{const img=document.createElement('img');img.className='contact-icon';img.src=`https://cdn.simpleicons.org/${brands[index]}/e7c164`;img.alt=old.getAttribute('aria-label') || brands[index];img.loading='lazy';old.replaceWith(img);});
+    }
     function bind(control:HTMLElement, resizing:boolean) {
       control.addEventListener('pointerdown', e=>{if(e.button!==0)return;e.preventDefault();control.setPointerCapture(e.pointerId);el.style.zIndex=String(++topLayer);el.classList.add('is-active'); const start={...item},sx=e.clientX,sy=e.clientY;
         const move=(ev:PointerEvent)=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;if(resizing){item.w=Math.min(800,Math.max(260,start.w+dx));item.h=Math.min(700,Math.max(250,start.h+dy));}else{item.x=Math.min(2000,Math.max(0,start.x+dx));item.y=Math.min(2000,Math.max(0,start.y+dy));}position(el,item);extent();};
@@ -187,7 +191,7 @@
   .workspace-canvas :global(.contact-links) { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
   .workspace-canvas :global(.contact-links a) { display: flex; min-width: 0; flex-direction: column; gap: 3px; padding: 9px 8px; border: 1px solid #ead38c2e; border-radius: 4px; color: #e6e2d6; text-decoration: none; background: #ffffff05; transition: border-color .18s, background .18s; }
   .workspace-canvas :global(.contact-links a:hover) { border-color: #e7c164; background: #e7c16412; }
-  .workspace-canvas :global(.contact-icon) { width: 22px; height: 22px; color: #e7c164; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+  .workspace-canvas :global(.contact-icon) { width: 22px; height: 22px; color: #e7c164; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; object-fit: contain; }
   .workspace-canvas :global(.contact-links strong) { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
   .workspace-canvas :global(.contact-links small) { overflow: hidden; color: #96998f; font: 9px 'IBM Plex Mono', monospace; text-overflow: ellipsis; white-space: nowrap; }
   .workspace-canvas :global(.quote-symbol) { color: #e8cb7b; }
