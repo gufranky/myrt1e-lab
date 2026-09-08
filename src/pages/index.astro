@@ -1,18 +1,66 @@
 ---
 import '../styles/global.css';
 ---
+
 <main>
-  <section class="opening" aria-label="Myrtle opening scene">
-    <img class="opening__scene" src="/assets/hero-wallpaper.webp" alt="A monochrome game-like opening scene" />
-    <div class="opening__grade"></div>
-    <header><span class="brand">myrt1e</span><span class="system">PRIVATE SYSTEM / 01</span></header>
-    <div class="opening__copy">
-      <p class="eyebrow">WUHAN UNIVERSITY · RENDERING / GAMES / AI</p>
-      <h1>MYRTLE<br/>ARCHIVE</h1>
-      <p class="intro">一个关于实时图形、可游玩世界与智能系统的个人空间。</p>
-      <a class="enter" href="#content"><span></span>进入档案</a>
+  <section class="hero-stage" aria-label="Myrtle Archive opening scene">
+    <div class="hero" data-hero>
+      <img class="hero__scene" src="/assets/hero-wallpaper.webp" alt="An industrial, game-like landscape" />
+      <div class="hero__grade" aria-hidden="true"></div>
+      <div class="hero__noise" aria-hidden="true"></div>
+      <header class="masthead">
+        <a class="masthead__brand" href="/" aria-label="Myrtle Archive home">myrt1e<span>_</span></a>
+        <p>个人数字自留地</p><div class="masthead__state"><i></i> SYSTEM NOMINAL</div>
+      </header>
+      <button class="field-note" type="button" data-dock><span>●</span> ARCHIVE STATUS / ONLINE</button>
+      <div class="hero-copy" data-copy>
+        <p class="hero-copy__kicker">武汉大学 · 渲染 / 游戏 / AI</p>
+        <h1>MYRTLE<br />ARCHIVE</h1>
+        <div class="command-line" aria-label="Research interests">
+          <span class="command-line__mark" aria-hidden="true"></span>
+          <div><div class="command-line__dots" aria-hidden="true"><i></i><i></i><i></i></div><p><b>myrt1e@lab:~$</b> <span data-type-line>initialising realtime worlds...</span><em aria-hidden="true"></em></p></div>
+        </div>
+        <button class="start-game" type="button" data-dock><span></span>ENTER ARCHIVE</button>
+      </div>
+      <section class="identity-card" aria-label="Myrtle profile terminal" data-profile>
+        <div class="core" aria-hidden="true"><div class="core__ring"></div><div class="core__facet">M</div></div>
+        <div class="profile-terminal">
+          <div class="profile-terminal__bar"><span><i></i><i></i><i></i></span><b>myrtle.profile / read-only</b><small>×</small></div>
+          <p class="path">C:\\Users\\myrt1e\\archive\\identity</p>
+          <p class="identity-command"><b>profile@myrtle:~$</b> whoami <em aria-hidden="true"></em></p>
+          <h2>myrt1e</h2><p class="identity-copy">研究实时渲染、游戏技术与 AI；在这里记录仍在生长的技术世界。</p>
+          <nav aria-label="Profile links"><a href="mailto:g2676536169@gmail.com">MAIL</a><a href="https://github.com/myrt1e" target="_blank" rel="noreferrer">GITHUB</a><a href="#main-content">INDEX</a></nav>
+        </div>
+      </section>
+      <button class="scroll-cue" type="button" data-dock aria-label="Reveal profile terminal"><span>scroll to initialise</span><b>⌄</b></button>
     </div>
-    <div class="coords">N 30° 32′ 02″ · E 114° 21′ 18″</div>
   </section>
-  <section id="content" class="placeholder"><p>内容区将在这里重写。</p></section>
+  <div class="signal-rail" aria-hidden="true"><span></span><b>NODE / 114.21.18</b><span></span></div>
+  <section id="main-content" class="signal-field" aria-label="Archive overview">
+    <p class="signal-field__word">MYRTLE</p>
+    <article class="local-signal"><p>LOCAL SIGNAL</p><strong data-clock>--:--:--</strong><span>Wuhan · China Standard Time</span></article>
+    <article class="welcome-panel"><p>欢迎进入。</p><h2>这里不是作品陈列室，<br />而是一个持续运行的技术世界。</h2><span>从实时图形、游戏机制到智能系统，内容将以档案形式逐步归档。</span></article>
+  </section>
 </main>
+
+<script>
+  const hero = document.querySelector('[data-hero]');
+  const dockControls = document.querySelectorAll('[data-dock]');
+  const typeLine = document.querySelector('[data-type-line]');
+  const clock = document.querySelector('[data-clock]');
+  let docked = false;
+  let unlockTimer = 0;
+  const lines = ['initialising realtime worlds...', 'loading renderer / game / ai...', 'archive connection established.'];
+  let lineIndex = 0;
+  const setDocked = () => {
+    if (!hero || docked) return;
+    docked = true; hero.classList.add('is-docked');
+    window.clearTimeout(unlockTimer);
+    unlockTimer = window.setTimeout(() => document.querySelector('#main-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 1250);
+  };
+  dockControls.forEach((control) => control.addEventListener('click', setDocked));
+  window.addEventListener('wheel', (event) => { if (window.scrollY < 8 && event.deltaY > 10) setDocked(); }, { passive: true });
+  window.setInterval(() => { if (typeLine) { lineIndex = (lineIndex + 1) % lines.length; typeLine.textContent = lines[lineIndex]; } }, 3600);
+  const updateClock = () => { if (clock) clock.textContent = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date()); };
+  updateClock(); window.setInterval(updateClock, 1000);
+</script>
