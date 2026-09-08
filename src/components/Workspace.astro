@@ -55,6 +55,7 @@ import "../styles/workspace.css";
   const defaults = (): Item[] => [{id:'home',kind:'location',x:32,y:32,w:360,h:320},{id:'words',kind:'quote',x:424,y:96,w:360,h:290},{id:'profile',kind:'intro',x:220,y:430,w:440,h:310},{id:'contact',kind:'contact',x:690,y:450,w:390,h:230},{id:'time',kind:'time',x:690,y:710,w:390,h:210},{id:'media',kind:'nowplaying',x:32,y:780,w:360,h:270},{id:'logs',kind:'terminal',x:424,y:780,w:420,h:270},{id:'stack',kind:'stack',x:890,y:780,w:300,h:240},{id:'chiaki',kind:'live2d',x:890,y:1040,w:380,h:380}];
   let items = defaults();
   let topLayer = 1;
+  let liveAvatar:any = null;
   const quotes = [['千里之行，始于足下。','《老子》'],['不积跬步，无以至千里。','《荀子·劝学》'],['山重水复疑无路，柳暗花明又一村。','陆游'],['纸上得来终觉浅，绝知此事要躬行。','陆游']];
   try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (Array.isArray(saved)) items = saved.filter((v) => v && typeof v.id === 'string' && ['location','quote','intro','contact','time','nowplaying','terminal','stack','dashboard','live2d'].includes(v.kind) && ['x','y','w','h'].every(k => Number.isFinite(v[k]))).slice(0,20).map(v => ({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(260,Math.min(800,v.w)),h:Math.max(250,Math.min(700,v.h))})); } catch {}
   if (!items.some(item => item.kind === 'intro')) items.push({id:'profile',kind:'intro',x:220,y:430,w:440,h:310});
@@ -155,11 +156,10 @@ import "../styles/workspace.css";
     }
     if(item.kind==='live2d'){
       const stage=content.querySelector<HTMLElement>('[data-avatar-stage]');const statusText=content.querySelector<HTMLElement>('[data-live2d-status]');
-      let avatar:any=null;
-      const launch=()=>{if(avatar){avatar.destroy();avatar=null;}if(statusText)statusText.textContent='正在启动 · Live2D';avatar=createWidget({model:{path:'/models/koharu/koharu.model.json'},position:'bottom-right',size:{width:300,height:420},primaryColor:'#e7c164',tips:{welcomeMessage:['欢迎来到 Myrt1e lab','Live2D avatar online'],messages:['系统运行正常 · 继续探索吧'],duration:4000,interval:9000},menus:{align:'left'}} as any);if(statusText)statusText.textContent='在线 · Koharu · Live2D';};
+      const launch=()=>{if(liveAvatar){liveAvatar.destroy();liveAvatar=null;}if(statusText)statusText.textContent='正在启动 · Live2D';liveAvatar=createWidget({model:{path:'/models/koharu/koharu.model.json'},position:'bottom-right',size:{width:300,height:420},primaryColor:'#e7c164',tips:{welcomeMessage:['欢迎来到 Myrt1e lab','Live2D avatar online'],messages:['系统运行正常 · 继续探索吧'],duration:4000,interval:9000},menus:{align:'left'}} as any);if(statusText)statusText.textContent='在线 · Koharu · Live2D';};
       content.querySelector<HTMLButtonElement>('[data-live2d-launch]')!.onclick=launch;
-      content.querySelector<HTMLButtonElement>('[data-live2d-sleep]')!.onclick=()=>{if(avatar){avatar.sleep();if(statusText)statusText.textContent='角色休眠中';}else if(statusText)statusText.textContent='角色尚未启动';};
-      const cleanup=()=>{if(!el.isConnected&&avatar){avatar.destroy();avatar=null;}};window.setInterval(cleanup,5000);launch();
+      content.querySelector<HTMLButtonElement>('[data-live2d-sleep]')!.onclick=()=>{if(liveAvatar){liveAvatar.sleep();if(statusText)statusText.textContent='角色休眠中';}else if(statusText)statusText.textContent='角色尚未启动';};
+      launch();const instance=liveAvatar;const cleanup=()=>{if(!el.isConnected&&liveAvatar===instance){liveAvatar.destroy();liveAvatar=null;}};window.setInterval(cleanup,5000);
     }
     function bind(control:HTMLElement, resizing:boolean) {
       control.addEventListener('pointerdown', e=>{if(e.button!==0)return;e.preventDefault();control.setPointerCapture(e.pointerId);el.style.zIndex=String(++topLayer);el.classList.add('is-active'); const start={...item},sx=e.clientX,sy=e.clientY;
