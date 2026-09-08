@@ -20,7 +20,7 @@ import "../styles/workspace.css";
       <button class="library-item" draggable="true" data-add="system"><span class="library-icon">⌁</span><strong>系统状态</strong><b>+</b></button>
       <div class="library-note">拖入工作区以添加</div>
     </aside>
-    <div class="workspace-shell"><div class="workspace-tab"><span>工作台 <b class="tab-dot"></b></span><small>拖动排列 · 自由缩放</small></div><div class="canvas-scroll"><div class="workspace-canvas" data-canvas><p class="canvas-empty" data-empty hidden>工作区为空<br/><small>从左侧添加你的第一个控件</small></p></div></div></div>
+    <div class="workspace-shell"><div class="workspace-tab"><div class="workspace-tabs" data-workspace-tabs><button class="workspace-tab-button is-active" data-workspace-id="showcase">展示 <b class="tab-dot"></b></button></div><button class="workspace-add" data-workspace-add aria-label="增加工作台">+</button><small>拖动排列 · 自由缩放</small></div><div class="canvas-scroll"><div class="workspace-canvas" data-canvas><p class="canvas-empty" data-empty hidden>工作区为空<br/><small>从左侧添加你的第一个控件</small></p></div></div></div>
   </div>
   <footer class="editor-status"><span><i></i> 本地工作区</span><span data-save-status role="status">布局自动保存在此浏览器</span></footer>
 </section>
@@ -57,7 +57,15 @@ import "../styles/workspace.css";
   type Item = {id:string; kind:Kind; x:number; y:number; w:number; h:number; parentId?:string};
   const canvas = document.querySelector<HTMLElement>('[data-canvas]')!;
   const status = document.querySelector<HTMLElement>('[data-save-status]')!;
-  const key = 'myrt1e-workspace-v1';
+  const activeWorkspace = new URLSearchParams(location.search).get('workspace') || 'showcase';
+  let key = `myrt1e-workspace-v1-${activeWorkspace}`;
+  const tabsRoot=document.querySelector<HTMLElement>('[data-workspace-tabs]')!;const tabsKey='myrt1e-workspaces';
+  let workspaceTabs:{id:string;name:string}[]=[];try{workspaceTabs=JSON.parse(localStorage.getItem(tabsKey)||'[]');if(!Array.isArray(workspaceTabs))workspaceTabs=[];}catch{}
+  if(!workspaceTabs.some(tab=>tab.id==='showcase'))workspaceTabs.unshift({id:'showcase',name:'展示'});
+  const persistTabs=()=>{try{localStorage.setItem(tabsKey,JSON.stringify(workspaceTabs));}catch{}};
+  const renderTabs=()=>{tabsRoot.innerHTML=workspaceTabs.map(tab=>`<button class="workspace-tab-button${tab.id===activeWorkspace?' is-active':''}" data-workspace-id="${tab.id}">${tab.name}${tab.id==='showcase'?'<b class="tab-dot"></b>':''}</button>`).join('');tabsRoot.querySelectorAll<HTMLButtonElement>('[data-workspace-id]').forEach(button=>button.onclick=()=>{const id=button.dataset.workspaceId;if(id&&id!==activeWorkspace){save();location.href=`${location.pathname}?workspace=${encodeURIComponent(id)}#main-content`;}});};
+  renderTabs();persistTabs();
+  document.querySelector<HTMLButtonElement>('[data-workspace-add]')!.onclick=()=>{const id=`workspace-${Date.now()}`;const name=`工作台 ${workspaceTabs.length}`;workspaceTabs.push({id,name});persistTabs();location.href=`${location.pathname}?workspace=${encodeURIComponent(id)}#main-content`;};
   const defaults = (): Item[] => [{id:'home',kind:'location',x:32,y:32,w:360,h:320},{id:'words',kind:'quote',x:424,y:96,w:360,h:290},{id:'profile',kind:'intro',x:220,y:430,w:440,h:310},{id:'contact',kind:'contact',x:690,y:450,w:390,h:230},{id:'time',kind:'time',x:690,y:710,w:390,h:210},{id:'media',kind:'nowplaying',x:32,y:780,w:360,h:270},{id:'logs',kind:'terminal',x:424,y:780,w:420,h:270},{id:'stack',kind:'stack',x:890,y:780,w:300,h:240},{id:'chiaki',kind:'live2d',x:890,y:1040,w:380,h:380},{id:'articles',kind:'article',x:32,y:1080,w:520,h:360},{id:'weather',kind:'weather',x:580,y:1080,w:360,h:280},{id:'system',kind:'system',x:32,y:1480,w:420,h:300}];
   let items = defaults();
   let topLayer = 1;
