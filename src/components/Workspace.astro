@@ -116,8 +116,6 @@ import "../styles/workspace.css";
       const fetchQuote=async()=>{const button=content.querySelector<HTMLButtonElement>('[data-next-quote]');if(button)button.disabled=true;try{const response=await fetch('https://v1.hitokoto.cn/?c=i&c=k',{headers:{Accept:'application/json'}});if(!response.ok)throw new Error('quote request failed');const data=await response.json();update(data.hitokoto || quotes[n][0], data.from_who || data.from || '一言');}catch{n=(n+1)%quotes.length;update();}finally{if(button)button.disabled=false;}};
       content.querySelector<HTMLButtonElement>('[data-next-quote]')!.onclick=fetchQuote;
       fetchQuote();
-      const fitQuote=()=>{const needed=head.offsetHeight+content.scrollHeight+2;if(needed>item.h){item.h=Math.min(700,needed);position(el,item);extent();save();}};
-      new ResizeObserver(fitQuote).observe(content);requestAnimationFrame(fitQuote);
     }
     if(item.kind==='location'){
       const mapTarget=content.querySelector<HTMLElement>('[data-location-map]');

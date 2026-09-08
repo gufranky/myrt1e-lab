@@ -39,9 +39,12 @@
 .editor-status{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#1e1f21;border-top:1px solid var(--edge);color:#93969d;font-size:10px;gap:16px}
 .editor-status i{display:inline-block;background:var(--gold);width:5px;height:5px;border-radius:50%;margin-right:8px}
 .editor .workspace-widget{position:absolute;display:flex;flex-direction:column;border:1px solid #ffffff16;border-radius:14px;background:linear-gradient(145deg,#28292c,#202123);box-shadow:0 8px 24px #0003,0 2px 5px #0003,inset 0 1px #ffffff05;overflow:hidden;container-type:inline-size}
-.editor .workspace-widget .widget-resize{display:none}
 .editor .workspace-widget.is-active{border-color:#e7c16480;box-shadow:0 12px 30px #0006,0 0 0 1px #e7c16422}
-.editor .workspace-widget[data-item-kind="quote"] .widget-content{overflow:visible}
+.editor .workspace-widget[data-item-kind="quote"] .widget-content{overflow:hidden}
+.editor .workspace-widget[data-item-kind="quote"] .quote-body{padding:clamp(10px,5cqw,22px) clamp(12px,6cqw,26px)}
+.editor .workspace-widget[data-item-kind="quote"] blockquote{font-size:clamp(12px,5cqw,20px);line-height:1.45;margin:clamp(4px,2cqw,8px) 0}
+.editor .workspace-widget[data-item-kind="quote"] .quote-symbol{font-size:clamp(28px,10cqw,44px);height:clamp(24px,8cqw,36px)}
+.editor .workspace-widget[data-item-kind="quote"] .quote-body p{font-size:clamp(9px,3cqw,12px)}
 .editor .widget-head{height:43px;flex-shrink:0;display:flex;align-items:center;border-bottom:1px solid #ffffff08;background:#ffffff02}
 .editor .widget-drag{flex:1;min-width:0;text-align:left;padding:0 16px;height:100%;border:0;background:none;color:#bfc1c7;font-size:11px;cursor:grab;touch-action:none}
 .editor .widget-close{width:42px;height:100%;border:0;background:none;color:#7e8188;font-size:20px}.editor .widget-close:hover{color:#fff;background:#ffffff08}
