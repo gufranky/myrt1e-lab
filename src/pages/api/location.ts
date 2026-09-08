@@ -31,7 +31,7 @@ export async function GET({ request }: { request: Request }) {
     if (!data.success) throw new Error('ipwho returned an unsuccessful response');
     return json({
       success: true,
-      city: data.city,
+      city: data.city || data.region || data.country,
       region: data.region,
       country: data.country,
       countryCode: data.country_code,
@@ -48,7 +48,7 @@ export async function GET({ request }: { request: Request }) {
       const data = await response.json();
       return json({
         success: true,
-        city: data.city,
+        city: data.city || data.region || data.country,
         region: data.region,
         country: data.country,
         countryCode: data.country_code,
