@@ -80,6 +80,11 @@ import "../styles/workspace.css";
   function extent() { canvas.style.minWidth = `${Math.max(320,...items.filter(i=>!i.parentId).map(i=>i.x+i.w+24))}px`; canvas.style.minHeight = `${Math.max(640,...items.map(i=>i.y+i.h+32))}px`; document.querySelector<HTMLElement>('[data-empty]')!.hidden = items.length > 0; }
   function position(el:HTMLElement,item:Item) { Object.assign(el.style,{left:`${item.x}px`,top:`${item.y}px`,width:`${item.w}px`,height:`${item.h}px`}); }
   const snap=(value:number,step=16)=>Math.round(value/step)*step;
+  function snapToPeers(item:Item,x:number,y:number){
+    const threshold=14;let nx=x,ny=y;const peers=items.filter(peer=>peer.id!==item.id&&!peer.parentId);
+    for(const peer of peers){const xTargets=[peer.x,peer.x+peer.w,peer.x+peer.w-(item.w||0)];const yTargets=[peer.y,peer.y+peer.h,peer.y+peer.h-(item.h||0)];for(const target of xTargets){if(Math.abs(nx-target)<=threshold){nx=target;break;}}for(const target of yTargets){if(Math.abs(ny-target)<=threshold){ny=target;break;}}}
+    return {x:nx,y:ny};
+  }
   function clock() { document.querySelectorAll<HTMLElement>('[data-wuhan-time]').forEach(el => { const timeZone = el.dataset.timezone || 'Asia/Shanghai'; el.textContent = new Intl.DateTimeFormat('en-GB',{timeZone,hour:'2-digit',minute:'2-digit'}).format(new Date()); }); }
   function mount(item:Item) {
     const el = document.createElement('article'); el.className = `workspace-widget${item.parentId ? ' workspace-child' : ''}`; el.dataset.itemId=item.id; el.dataset.itemKind=item.kind; position(el,item);
@@ -187,7 +192,7 @@ import "../styles/workspace.css";
     }
     function bind(control:HTMLElement, resizing:boolean) {
       control.addEventListener('pointerdown', e=>{if(e.button!==0)return;e.preventDefault();control.setPointerCapture(e.pointerId);el.style.zIndex=String(++topLayer);el.classList.add('is-active'); const start={...item},sx=e.clientX,sy=e.clientY;
-        const move=(ev:PointerEvent)=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;if(resizing){item.w=Math.min(800,Math.max(260,snap(start.w+dx)));item.h=Math.min(700,Math.max(250,snap(start.h+dy)));}else{item.x=Math.min(2000,Math.max(0,snap(start.x+dx)));item.y=Math.min(2000,Math.max(0,snap(start.y+dy)));}position(el,item);extent();};
+        const move=(ev:PointerEvent)=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;if(resizing){item.w=Math.min(800,Math.max(260,snap(start.w+dx)));item.h=Math.min(700,Math.max(250,snap(start.h+dy)));}else{const peer=snapToPeers(item,start.x+dx,start.y+dy);item.x=Math.min(2000,Math.max(0,Math.abs(peer.x-(start.x+dx))<=14?peer.x:snap(start.x+dx)));item.y=Math.min(2000,Math.max(0,Math.abs(peer.y-(start.y+dy))<=14?peer.y:snap(start.y+dy)));}position(el,item);extent();};
         const end=()=>{control.removeEventListener('pointermove',move);control.removeEventListener('pointerup',end);control.removeEventListener('pointercancel',end);el.classList.remove('is-active');save();};control.addEventListener('pointermove',move);control.addEventListener('pointerup',end);control.addEventListener('pointercancel',end);
       });
       control.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const dx=e.key==='ArrowLeft'?-8:e.key==='ArrowRight'?8:0,dy=e.key==='ArrowUp'?-8:e.key==='ArrowDown'?8:0;if(resizing){item.w=Math.max(260,Math.min(800,item.w+dx));item.h=Math.max(250,Math.min(700,item.h+dy));}else{item.x=Math.max(0,Math.min(2000,item.x+dx));item.y=Math.max(0,Math.min(2000,item.y+dy));}position(el,item);extent();save();});
