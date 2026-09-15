@@ -1,0 +1,92 @@
+---
+import '../styles/home-profile.css';
+const groups = [
+  { name: '图形与引擎', skills: [['unreal','Unreal Engine'],['unity','Unity'],['blender','Blender'],['qt','Qt']] },
+  { name: '编程语言', skills: [['cpp','C++'],['cs','C#'],['py','Python'],['go','Go'],['java','Java'],['ocaml','OCaml']] },
+  { name: 'AI 与数据', skills: [['pytorch','PyTorch'],['sklearn','scikit-learn'],['mysql','MySQL'],['redis','Redis']] },
+  { name: '开发工具', skills: [['azure','Azure'],['cloudflare','Cloudflare'],['github','GitHub'],['gitlab','GitLab'],['gmail','Gmail'],['latex','LaTeX'],['linux','Linux'],['md','Markdown'],['vscode','VS Code'],['visualstudio','Visual Studio'],['wordpress','WordPress']] },
+];
+const contacts = [
+  ['GitHub','https://github.com/gufranky','https://github.githubassets.com/favicons/favicon.svg'],
+  ['哔哩哔哩','https://space.bilibili.com/186605312','https://www.bilibili.com/favicon.ico'],
+  ['Steam','https://steamcommunity.com/id/frankygu/','https://store.steampowered.com/favicon.ico'],
+];
+---
+<section id="main-content" class="home-profile" aria-label="Myrt1e lab 个人档案">
+  <div class="dossier-shell">
+    <header class="dossier-header">
+      <a class="dossier-brand" href="#" aria-label="返回开屏"><b>M</b><span>Myrt1e lab<small>个人数字自留地</small></span></a>
+      <nav class="dossier-nav" aria-label="档案分类">
+        {['总览','档案','技能','日志'].map((label,i)=><button type="button" data-profile-section={['overview','profile','skills','journal'][i]} aria-current={i===0?'page':undefined}>{label}</button>)}
+      </nav>
+      <button type="button" class="dossier-workbench" data-open-workbench>进入工作台 <span aria-hidden="true">↗</span></button>
+    </header>
+    <div class="dossier-grid">
+      <aside class="dossier-identity">
+        <p class="dossier-caption">个人档案</p><h1>gufranky<span class="dossier-name-rule" aria-hidden="true"></span></h1>
+        <p class="dossier-school">武汉大学 <span>大四学生</span></p>
+        <div class="dossier-directions"><span>计算机图形学</span><span>游戏开发</span><span>AI</span></div>
+        <p class="dossier-intro">很多项目，兴趣使然。<br/>在渲染、游戏与 AI 之间，<br/>留一片属于自己的技术世界。</p>
+        <dl class="dossier-facts"><div><dt>研究方向</dt><dd>实时渲染</dd></div><div><dt>当前关注</dt><dd>UE5 · CS 插件</dd></div><div><dt>喜欢的音乐</dt><dd>Mili</dd></div></dl>
+        <div class="dossier-contacts"><p>欢迎与我沟通</p><div>{contacts.map(([name,url,icon])=><a href={url} target="_blank" rel="noreferrer"><img src={icon} alt="" width="20" height="20"/><span>{name}</span></a>)}</div><a class="dossier-email" href="mailto:g2676536169@gmail.com">g2676536169@gmail.com</a></div>
+      </aside>
+      <figure class="dossier-portrait">
+        <div class="dossier-portrait-grid" aria-hidden="true"></div>
+        <span class="dossier-portrait-word" aria-hidden="true">Myrt1e</span>
+        <img class="dossier-ghost" src="https://github.com/gufranky.png?size=460" alt="" aria-hidden="true"/>
+        <div class="dossier-avatar-frame"><img data-dossier-avatar src="https://github.com/gufranky.png?size=460" width="320" height="320" alt="gufranky 的 GitHub 头像"/><span class="dossier-avatar-fallback" hidden>gufranky</span></div>
+        <figcaption><span>渲染 · 游戏 · AI</span><strong>属于我的小世界。</strong><span>武汉大学 / gufranky</span></figcaption>
+      </figure>
+      <div class="dossier-content">
+        <div class="dossier-content-heading"><span data-section-label>总览</span><span aria-hidden="true">◆</span></div>
+        <section data-profile-panel="overview" aria-label="总览">
+          <div class="dossier-block"><h2>当前关注</h2><a class="dossier-research" href="?section=profile" data-section-link="profile"><span>UE5</span><div><h3>渲染开发</h3><p>计算机图形学 · 实时渲染</p></div><b aria-hidden="true">↗</b></a><a class="dossier-research" href="?section=profile" data-section-link="profile"><span>CS</span><div><h3>游戏插件开发</h3><p>兴趣驱动的开发与实验</p></div><b aria-hidden="true">↗</b></a></div>
+          <div class="dossier-block"><div class="dossier-heading-row"><h2>最近文章</h2><a href="?section=journal" data-section-link="journal">全部日志 ↗</a></div><div data-home-articles><p>正在读取文章…</p></div></div>
+          <div class="dossier-summary"><div><span>GitHub 贡献统计</span><strong data-home-commits>读取中</strong></div><div><span>累计编程时长</span><strong data-home-coding>读取中</strong></div></div>
+          <p class="dossier-source">来源：GitHub / WakaTime · <span data-sync-time>等待同步</span></p>
+        </section>
+        <section data-profile-panel="profile" aria-label="档案" hidden>
+          <div class="dossier-block"><h2>关于我</h2><p class="dossier-prose">我是 frankygu，来自武汉大学的大四学生，主要研究计算机图形学（渲染方向）、游戏开发与 AI。</p><p class="dossier-prose">目前主要的研究内容是 UE5 相关渲染开发，以及 CS 游戏插件开发。很多项目是兴趣使然，欢迎与我沟通。</p></div>
+          <dl class="dossier-records"><div><dt>图形学</dt><dd>以渲染方向为主要研究领域，关注 UE5 相关渲染开发。</dd></div><div><dt>游戏开发</dt><dd>CS 游戏插件开发，以及兴趣驱动的个人项目。</dd></div><div><dt>AI</dt><dd>个人研究与兴趣方向之一。</dd></div><div><dt>音乐</dt><dd>Mili。给这个小世界留一点背景音乐。</dd></div></dl>
+        </section>
+        <section data-profile-panel="skills" aria-label="技能" hidden>
+          <div class="dossier-block"><h2>技术与工具</h2><p>选择图标，查看技术名称与分类。</p></div>
+          <div class="dossier-skill-detail" aria-live="polite"><img data-skill-preview src="https://skillicons.dev/icons?i=unreal&theme=light" alt=""/><div><strong data-skill-name>Unreal Engine</strong><span data-skill-category>图形与引擎</span><p data-skill-description>用于渲染开发与游戏项目。</p></div></div>
+          {groups.map(group=><div class="dossier-skill-group"><h3>{group.name}</h3><div>{group.skills.map(([id,name])=><button type="button" data-skill-name={name} data-skill-id={id} data-skill-group={group.name} aria-label={name} aria-pressed={id==='unreal'?'true':'false'} title={name}><img src={`https://skillicons.dev/icons?i=${id}&theme=light`} alt="" loading="lazy" width="36" height="36"/><span>{name}</span></button>)}</div></div>)}
+        </section>
+        <section data-profile-panel="journal" aria-label="日志" hidden>
+          <div class="dossier-block"><div class="dossier-heading-row"><h2>开发与记录</h2><a href="https://blog.myrt1e.com" target="_blank" rel="noreferrer">打开博客 ↗</a></div><div data-journal-articles><p>正在读取文章…</p></div></div>
+          <dl class="dossier-records"><div><dt>贡献统计</dt><dd data-home-commits>读取中</dd></div><div><dt>公开仓库</dt><dd data-home-repos>读取中</dd></div><div><dt>累计编程</dt><dd data-home-coding>读取中</dd></div></dl>
+          <div class="dossier-block"><h3>主要语言</h3><div data-languages>读取中</div><p class="dossier-source">来源：现有 GitHub 统计接口。语言分布沿用接口返回比例；贡献数并非纯 commits，统计区间以接口为准。WakaTime 为累计时长。</p><p class="dossier-source" data-github-updated></p></div>
+        </section>
+      </div>
+    </div>
+    <footer class="dossier-footer"><span>保持好奇，兴趣使然。</span><div class="dossier-music" data-home-player><img data-album-art width="44" height="44" alt="Mili 官方歌曲封面"/><div class="dossier-song"><strong data-track-title>RTRT</strong><span data-player-state>Mili · 点击播放</span></div><button data-player-prev aria-label="上一首">|‹</button><button data-player-toggle aria-label="播放 Mili" aria-pressed="false">▶</button><button data-player-next aria-label="下一首">›|</button></div></footer>
+  </div>
+</section>
+<script>
+  import { bindMusic } from '../lib/music';
+  const root=document.querySelector<HTMLElement>('.home-profile')!;
+  const names:Record<string,string>={overview:'总览',profile:'档案',skills:'技能',journal:'日志'};
+  const activate=(section:string,push=false)=>{
+    const name=names[section]?section:'overview';
+    root.querySelectorAll<HTMLElement>('[data-profile-panel]').forEach(el=>el.hidden=el.dataset.profilePanel!==name);
+    root.querySelectorAll('[data-profile-section]').forEach(el=>{if((el as HTMLElement).dataset.profileSection===name)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});
+    root.querySelector('[data-section-label]')!.textContent=names[name];
+    if(push){const url=new URL(location.href);url.searchParams.set('section',name);history.pushState({section:name},'',url);}
+  };
+  root.querySelectorAll<HTMLElement>('[data-profile-section], [data-section-link]').forEach(el=>el.addEventListener('click',event=>{event.preventDefault();activate(el.dataset.profileSection||el.dataset.sectionLink!,true);}));
+  activate(new URLSearchParams(location.search).get('section')||'overview');
+  window.addEventListener('popstate',()=>activate(new URLSearchParams(location.search).get('section')||'overview'));
+  root.querySelector('[data-open-workbench]')!.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('myrtle:open-workbench')));
+  const skillDescriptions:Record<string,string>={unreal:'用于 UE5 相关渲染开发与游戏项目。',unity:'用于游戏开发与交互原型。',blender:'用于三维内容创作与资产处理。',qt:'用于桌面工具与界面开发。',cpp:'用于图形学与性能相关开发。',cs:'用于游戏插件与工具开发。',py:'用于研究、自动化与 AI 实验。',go:'用于服务与工具开发。',java:'用于通用软件开发。',ocaml:'用于函数式编程学习与实践。',pytorch:'用于深度学习实验。',sklearn:'用于机器学习实验。',mysql:'用于关系型数据存储。',redis:'用于缓存与数据服务。'};
+  root.querySelectorAll<HTMLButtonElement>('button[data-skill-name]').forEach(button=>button.addEventListener('click',()=>{root.querySelectorAll('button[data-skill-name]').forEach(el=>el.setAttribute('aria-pressed',String(el===button)));root.querySelector('strong[data-skill-name]')!.textContent=button.dataset.skillName!;root.querySelector('[data-skill-category]')!.textContent=button.dataset.skillGroup!;const id=button.dataset.skillId!;const preview=root.querySelector<HTMLImageElement>('[data-skill-preview]')!;preview.src=`https://skillicons.dev/icons?i=${id}&theme=light`;preview.alt=button.dataset.skillName!;root.querySelector('[data-skill-description]')!.textContent=skillDescriptions[id]||`已用于 ${button.dataset.skillGroup} 相关的学习与项目开发。`;}));
+  root.querySelectorAll<HTMLImageElement>('img').forEach(img=>img.addEventListener('error',()=>{img.hidden=true;if(img.hasAttribute('data-dossier-avatar'))root.querySelector<HTMLElement>('.dossier-avatar-fallback')!.hidden=false;}));
+  bindMusic(root.querySelector<HTMLElement>('[data-home-player]')!);
+  const update=(selector:string,value:unknown)=>root.querySelectorAll(selector).forEach(el=>el.textContent=String(value??'暂无数据'));
+  const request=async(path:string)=>{const response=await fetch(path,{signal:AbortSignal.timeout(20000)});if(!response.ok)throw new Error(path);return response.json();};
+  request('/api/blog').then(data=>{root.querySelectorAll<HTMLElement>('[data-home-articles],[data-journal-articles]').forEach(target=>{target.replaceChildren();const posts=Array.isArray(data.posts)?data.posts:[];posts.slice(0,target.hasAttribute('data-home-articles')?3:8).forEach((post:any)=>{const a=document.createElement('a');a.className='dossier-article';try{const url=new URL(post.link);if(!['https:','http:'].includes(url.protocol))return;a.href=url.href;}catch{return;}a.target='_blank';a.rel='noreferrer';const title=document.createElement('strong');title.textContent=post.title||'未命名文章';const meta=document.createElement('span');meta.textContent=post.date||'';const arrow=document.createElement('b');arrow.textContent='↗';arrow.setAttribute('aria-hidden','true');a.append(title,meta,arrow);target.append(a);});if(!target.children.length)target.textContent='暂无文章';});}).catch(()=>update('[data-home-articles],[data-journal-articles]','博客暂时不可用，可通过日志页打开博客。'));
+  request('/api/github').then(data=>{update('[data-home-commits]',data.commits);update('[data-home-repos]',data.repos);const container=root.querySelector<HTMLElement>('[data-languages]')!;container.replaceChildren();Object.entries(data.languages||{}).slice(0,5).forEach(([name,value]:[string,any])=>{const row=document.createElement('div');row.className='dossier-language';const label=document.createElement('span');label.textContent=name;const meter=document.createElement('meter');meter.min=0;meter.max=100;meter.value=Math.max(0,Math.min(100,Number(value.percent??value)||0));meter.setAttribute('aria-label',name);const percent=document.createElement('span');percent.textContent=`${meter.value}%`;row.append(label,meter,percent);container.append(row);});if(!container.children.length)container.textContent='暂无公开语言数据';update('[data-github-updated]',data.updated?`GitHub 更新于 ${new Date(data.updated).toLocaleString('zh-CN')}`:'接口未提供更新时间');}).catch(()=>{update('[data-home-commits],[data-home-repos],[data-languages]','暂时不可用');});
+  request('/api/wakatime').then(data=>update('[data-home-coding]',data.hours)).catch(()=>update('[data-home-coding]','暂时不可用'));
+  update('[data-sync-time]',`本次读取 ${new Date().toLocaleTimeString('zh-CN')}`);
+</script>

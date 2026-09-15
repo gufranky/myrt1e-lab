@@ -1,8 +1,14 @@
 ---
 import "../styles/workspace.css";
+import "../styles/blueprint.css";
+import "../styles/homepage.css";
+import showcaseConfig from "../../data/showcase-layout.json";
+import HomeProfile from "./HomeProfile.astro";
+const homepageRoute = !Astro.url.searchParams.has('view') && !Astro.url.searchParams.has('edit');
 ---
-<section id="main-content" class="editor" aria-label="个人工作台">
-  <header class="editor-bar"><div><span class="editor-logo">M</span><strong>Myrt1e lab</strong><span class="editor-divider">/</span><span>个人工作台</span></div><div class="editor-actions"><span class="session-badge">个人空间</span><button data-arrange>自动排列</button><button data-reset>恢复默认</button></div></header>
+<HomeProfile />
+<section id="workbench-content" class={`editor blueprint workbench-host ${homepageRoute ? 'is-route-hidden' : ''}`} aria-label="访客工作台" data-showcase-config={JSON.stringify(showcaseConfig)}>
+  <header class="editor-bar"><div><span class="editor-logo">M</span><strong>Myrt1e lab</strong><span class="editor-divider">/</span><span data-section-label>个人主页</span></div><nav class="view-switch" aria-label="页面模式"><button data-view-home class="is-active">个人主页</button><button data-view-workbench>工作台</button></nav><div class="editor-actions"><span class="session-badge" data-mode-label>主页 · 浏览</span><button data-publish hidden>发布展示</button><button data-toggle-lock hidden>锁定展示</button><button data-arrange>整理节点</button><button data-reset>恢复布局</button></div></header>
   <div class="editor-body">
     <aside class="library"><h2>控件库 <span>13</span></h2><input class="library-search" data-widget-search type="search" placeholder="搜索控件…" aria-label="搜索控件" /><p class="library-group">信息</p>
       <button class="library-item" draggable="true" data-add="location"><span class="library-icon">⌖</span><strong>地理位置</strong><b>+</b></button>
@@ -20,7 +26,12 @@ import "../styles/workspace.css";
       <button class="library-item" draggable="true" data-add="system"><span class="library-icon">⌁</span><strong>系统状态</strong><b>+</b></button>
       <div class="library-note">拖入工作区以添加</div>
     </aside>
-    <div class="workspace-shell"><div class="workspace-tab"><div class="workspace-tabs" data-workspace-tabs><button class="workspace-tab-button is-active" data-workspace-id="showcase">展示 <b class="tab-dot"></b></button></div><button class="workspace-add" data-workspace-add aria-label="增加工作台">+</button><small>拖动排列 · 自由缩放</small></div><div class="canvas-scroll"><div class="workspace-canvas" data-canvas><p class="canvas-empty" data-empty hidden>工作区为空<br/><small>从左侧添加你的第一个控件</small></p></div></div></div>
+    <div class="workspace-shell">
+      <div class="workspace-tab"><div class="workspace-tabs" data-workspace-tabs></div><button class="workspace-add" data-workspace-add aria-label="增加工作台">+</button></div>
+      <div class="graph-toolbar"><span><i></i> Myrt1e <b>/</b> <span data-graph-name>展示</span></span><div><button data-camera="out" aria-label="缩小画布">−</button><output data-zoom>100%</output><button data-camera="in" aria-label="放大画布">+</button><button data-camera="fit">适应视图</button><button data-camera="reset">1:1</button></div></div>
+      <div class="canvas-scroll" tabindex="0" aria-label="蓝图画布：空白处拖动平移，滚轮缩放"><div class="workspace-canvas" data-canvas><p class="canvas-empty" data-empty hidden>开始你的个人蓝图<br/><small>从控件库拖入节点，或点击控件名称添加</small></p></div><div class="graph-hint">拖动空白处平移 <span>·</span> 滚轮缩放 <span>·</span> F 适应视图</div></div>
+    </div>
+    <aside class="graph-details"><h2>节点详情</h2><div class="detail-empty" data-detail-empty><span>◇</span><strong>选择一个节点</strong><p>在画布中点选控件，查看位置、尺寸与所属关系。</p></div><div data-detail hidden><h3 data-detail-name></h3><span class="detail-section">布局</span><dl><dt>位置 X</dt><dd data-detail-x></dd><dt>位置 Y</dt><dd data-detail-y></dd><dt>宽度</dt><dd data-detail-w></dd><dt>高度</dt><dd data-detail-h></dd><dt>所属</dt><dd data-detail-parent></dd></dl><button data-focus-node>定位此节点</button></div><div class="graph-outline"><h2>当前节点 <span data-node-count>0</span></h2><div data-outline></div></div><p class="details-note">每一个节点，都是这个小世界的一部分。</p></aside>
   </div>
   <footer class="editor-status"><span><i></i> 本地工作区</span><span data-save-status role="status">布局自动保存在此浏览器</span></footer>
 </section>
@@ -30,12 +41,12 @@ import "../styles/workspace.css";
 <template id="intro-widget"><div class="intro-body"><div class="intro-profile"><div class="intro-avatar" data-initials="GF"><img data-profile-avatar src="https://github.com/gufranky.png?size=256" alt="gufranky 的 GitHub 头像" loading="lazy" /></div><div><span class="intro-eyebrow">PLAYER PROFILE / 01</span><h3>gufranky</h3><p>武汉大学 · 大四</p></div></div><div class="intro-copy"><p>我是来自武汉大学的大四学生，主要研究计算机图形学（渲染方向）、游戏开发与 AI。</p><p>目前专注于 UE5 渲染开发与 CS 游戏插件开发，很多项目都源于兴趣使然。</p><p>欢迎与我沟通。</p></div><div class="intro-children" data-child-drop><span>将子控件拖到这里</span></div></div><div class="widget-foot"><span>个人简介 / PROFILE</span><span>GITHUB · GUFRANKY</span></div></template>
 <template id="contact-widget"><div class="contact-body"><span class="intro-eyebrow">CONTACT CHANNELS / 03</span><h3>联系我</h3><div class="contact-links"><a href="https://space.bilibili.com/186605312" target="_blank" rel="noreferrer"><svg class="contact-icon" viewBox="0 0 24 24" aria-label="哔哩哔哩"><path d="M8 5 6 2M16 5l2-3"/><rect x="3" y="5" width="18" height="15" rx="4"/><path d="M8 11v3M16 11v3M9 17h6"/></svg><strong>哔哩哔哩</strong><small>186605312</small></a><a href="https://github.com/gufranky" target="_blank" rel="noreferrer"><svg class="contact-icon" viewBox="0 0 24 24" aria-label="GitHub"><path d="M12 2.5a9.5 9.5 0 0 0-3 18.51c.48.09.65-.21.65-.46v-1.7c-2.66.58-3.22-1.13-3.22-1.13-.44-1.12-1.08-1.42-1.08-1.42-.88-.6.07-.59.07-.59.97.07 1.48 1 1.48 1 .87 1.48 2.28 1.05 2.84.8.09-.62.34-1.05.62-1.29-2.12-.24-4.35-1.06-4.35-4.72 0-1.04.37-1.89.98-2.56-.1-.24-.43-1.21.09-2.52 0 0 .8-.26 2.62.98a9.1 9.1 0 0 1 4.77 0c1.82-1.24 2.62-.98 2.62-.98.52 1.31.19 2.28.09 2.52.61.67.98 1.52.98 2.56 0 3.67-2.23 4.48-4.36 4.72.34.29.65.85.65 1.72v2.54c0 .25.17.55.66.46A9.5 9.5 0 0 0 12 2.5Z"/></svg><strong>GitHub</strong><small>gufranky</small></a><a href="https://steamcommunity.com/id/frankygu/" target="_blank" rel="noreferrer"><svg class="contact-icon" viewBox="0 0 24 24" aria-label="Steam"><circle cx="12" cy="12" r="9"/><circle cx="16.5" cy="8" r="2.5"/><circle cx="8" cy="15.5" r="2.5"/><path d="m10 14 4.6-4.2"/></svg><strong>Steam</strong><small>frankygu</small></a></div></div><div class="widget-foot"><span>联系我 / CHANNELS</span><span>OPEN LINK ↗</span></div></template>
 
-<template id="time-widget"><div class="time-body"><span class="intro-eyebrow">TIME STREAM / 02</span><div class="time-row"><div><small>GUFRANKY / 武汉</small><strong data-home-time>--:--:--</strong><em>Asia/Shanghai</em><b data-time-delta-home>计算时差中…</b></div><i></i><div><small>VISITOR / 访客</small><strong data-visitor-time>--:--:--</strong><em data-visitor-zone>检测时区中…</em></div></div></div><div class="widget-foot"><span>时间 / TIMEZONE</span><span data-time-delta>LOCAL SYNC</span></div></template>
+<template id="time-widget"><div class="time-body"><div class="time-row"><div><small>GUFRANKY / 武汉</small><strong data-home-time>--:--:--</strong><em>Asia/Shanghai</em><b data-time-delta-home>计算时差中…</b></div><i></i><div><small>VISITOR / 访客</small><strong data-visitor-time>--:--:--</strong><em data-visitor-zone>检测时区中…</em></div></div></div><div class="widget-foot"><span>时间 / TIMEZONE</span><span data-time-delta>LOCAL SYNC</span></div></template>
 
 <template id="nowplaying-widget">
   <div class="nowplaying-body">
     <div class="media-label"><span>Listening room</span><span class="media-badge">界面预览</span></div>
-    <div class="media-scene" aria-hidden="true"><div class="record-sleeve"><span>MILI<br/>OFFICIAL SET</span><b>音</b><small>YouTube · Official Artist Channel</small></div><div class="vinyl"><i></i></div></div>
+    <div class="media-scene" aria-label="Mili 专辑封面"><img class="album-art" data-album-art src="https://i.ytimg.com/vi/IcpzqZrpLVM/hqdefault.jpg" alt="Mili - RTRT 专辑封面" loading="lazy" /></div>
     <div class="nowplaying-meta"><strong data-track-title>RTRT</strong><small data-track-subtitle>Mili · Official Artist Channel</small></div>
     <div class="player-progress"><i data-progress></i></div>
     <div class="player-controls"><span class="media-source">YouTube · 官方</span><div class="transport"><button data-player-prev aria-label="上一首 Mili"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M18 5 8 12l10 7Z"/></svg></button><button class="player-main" data-player-toggle aria-label="播放 Mili" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7Z"/></svg></button><button data-player-next aria-label="下一首 Mili"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M6 5l10 7-10 7Z"/></svg></button></div><span data-player-time>00:00</span></div><iframe class="player-embed" data-player-embed title="Mili 官方音乐播放器" allow="autoplay; encrypted-media" loading="lazy"></iframe>
@@ -51,55 +62,229 @@ import "../styles/workspace.css";
 
 <script>
   import L from 'leaflet';
+  import { bindMusic } from '../lib/music';
   import { createWidget } from 'l2d-widget';
   import 'leaflet/dist/leaflet.css';
   type Kind = 'location' | 'quote' | 'intro' | 'contact' | 'time' | 'nowplaying' | 'terminal' | 'stack' | 'dashboard' | 'live2d' | 'article' | 'weather' | 'system';
   type Item = {id:string; kind:Kind; x:number; y:number; w:number; h:number; parentId?:string};
+  type ShowcaseConfig = {version:number;baseWidth:number;baseHeight:number;items:Item[]};
+  const publishedShowcase = JSON.parse(document.querySelector<HTMLElement>('.editor')?.dataset.showcaseConfig||'{}') as ShowcaseConfig;
   const canvas = document.querySelector<HTMLElement>('[data-canvas]')!;
   const status = document.querySelector<HTMLElement>('[data-save-status]')!;
-  let activeWorkspace = new URLSearchParams(location.search).get('workspace') || 'showcase';
+  const routeParams = new URLSearchParams(location.search);
+  const requestedWorkspace = routeParams.get('workspace');
+  let activeWorkspace = requestedWorkspace || 'showcase';
   let key = `myrt1e-workspace-v1-${activeWorkspace}`;
   const tabsRoot=document.querySelector<HTMLElement>('[data-workspace-tabs]')!;const tabsKey='myrt1e-workspaces';
   let workspaceTabs:{id:string;name:string}[]=[];try{workspaceTabs=JSON.parse(localStorage.getItem(tabsKey)||'[]');if(!Array.isArray(workspaceTabs))workspaceTabs=[];}catch{}
   if(!workspaceTabs.some(tab=>tab.id==='showcase'))workspaceTabs.unshift({id:'showcase',name:'展示'});
   const persistTabs=()=>{try{localStorage.setItem(tabsKey,JSON.stringify(workspaceTabs));}catch{}};
-  const renderTabs=()=>{tabsRoot.innerHTML=workspaceTabs.map(tab=>`<span class="workspace-tab-chip"><button class="workspace-tab-button${tab.id===activeWorkspace?' is-active':''}" data-workspace-id="${tab.id}">${tab.name}${tab.id==='showcase'?'<b class="tab-dot"></b>':''}</button>${tab.id==='showcase'?'':'<button class="workspace-tab-close" data-workspace-close="'+tab.id+'" aria-label="关闭 '+tab.name+'">×</button>'}</span>`).join('');tabsRoot.querySelectorAll<HTMLButtonElement>('[data-workspace-id]').forEach(button=>button.onclick=()=>{const id=button.dataset.workspaceId;if(id&&id!==activeWorkspace)switchWorkspace(id);});tabsRoot.querySelectorAll<HTMLButtonElement>('[data-workspace-close]').forEach(button=>button.onclick=(event)=>{event.stopPropagation();const id=button.dataset.workspaceClose;if(!id)return;workspaceTabs=workspaceTabs.filter(tab=>tab.id!==id);persistTabs();if(id===activeWorkspace)switchWorkspace('showcase');else renderTabs();});};
+  if(!requestedWorkspace && routeParams.get('view')==='workbench'){
+    const savedWorkbench=workspaceTabs.find(tab=>tab.id!=='showcase');
+    if(savedWorkbench){activeWorkspace=savedWorkbench.id;key=`myrt1e-workspace-v1-${activeWorkspace}`;}
+    else{
+      const guestId='workspace-guest';
+      workspaceTabs.push({id:guestId,name:'工作台 1'});persistTabs();activeWorkspace=guestId;key=`myrt1e-workspace-v1-${activeWorkspace}`;
+    }
+  }
+  const mobile=()=>window.matchMedia('(max-width:760px)').matches;
+  const showcaseEditMode=activeWorkspace==='showcase' && routeParams.get('edit')==='1';
+  let displayMode:'homepage'|'workbench'=activeWorkspace==='showcase'&&!showcaseEditMode?'homepage':'workbench';
+  let showcaseLocked=activeWorkspace==='showcase' && !showcaseEditMode;
+  const editable=()=>displayMode==='workbench'&&!mobile()&&!showcaseLocked;
+  const scrollPositions:Record<string,number>={};
+  const scrollKey=()=>`${displayMode}:${activeWorkspace}`;
+  const rememberScroll=()=>{scrollPositions[scrollKey()]=window.scrollY;};
+  const restoreScroll=()=>{const saved=scrollPositions[scrollKey()];if(saved===undefined)return;requestAnimationFrame(()=>window.scrollTo({top:saved,behavior:'auto'}));};
+  const escapeText=(value:string)=>value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
+  const editor=document.querySelector<HTMLElement>('.editor')!;
+  const homeProfile=document.querySelector<HTMLElement>('.home-profile');
+  const homeViewButton=document.querySelector<HTMLButtonElement>('[data-view-home]')!;
+  const workbenchViewButton=document.querySelector<HTMLButtonElement>('[data-view-workbench]')!;
+  const syncView=()=>{
+    const homepage=displayMode==='homepage';
+    editor.classList.toggle('homepage-mode',homepage);editor.classList.toggle('workbench-mode',!homepage);
+    editor.classList.toggle('is-route-hidden',homepage);homeProfile?.classList.toggle('is-hidden',!homepage);
+    homeViewButton.classList.toggle('is-active',homepage);workbenchViewButton.classList.toggle('is-active',!homepage);
+    homeViewButton.setAttribute('aria-pressed',String(homepage));workbenchViewButton.setAttribute('aria-pressed',String(!homepage));
+    const label=document.querySelector<HTMLElement>('[data-section-label]');if(label)label.textContent=homepage?'个人主页':'工作台';
+    document.querySelector('[data-graph-name]')!.textContent=workspaceTabs.find(t=>t.id===activeWorkspace)?.name||'工作台';
+  };
+  const syncLock=()=>{
+    syncView();
+    editor.classList.toggle('is-locked',displayMode==='homepage'||showcaseLocked||mobile());
+    document.querySelector('[data-mode-label]')!.textContent=mobile()?'单列阅读':displayMode==='homepage'?'主页 · 浏览':showcaseLocked?'展示 · 锁定':'编辑模式';
+    document.querySelectorAll<HTMLButtonElement>('[data-add], [data-arrange], [data-reset]').forEach(button=>{button.disabled=!editable();button.draggable=editable()&&button.hasAttribute('data-add');});
+    const publish=document.querySelector<HTMLButtonElement>('[data-publish]');
+    const lock=document.querySelector<HTMLButtonElement>('[data-toggle-lock]');
+    if(publish)publish.hidden=activeWorkspace!=='showcase'||!showcaseEditMode||showcaseLocked;
+    if(lock){lock.hidden=activeWorkspace!=='showcase'||!showcaseEditMode;lock.textContent=showcaseLocked?'编辑展示':'锁定展示';}
+  };
+  const renderTabs=()=>{
+    tabsRoot.innerHTML=workspaceTabs.map(tab=>`<span class="workspace-tab-chip"><button class="workspace-tab-button${tab.id===activeWorkspace?' is-active':''}" data-workspace-id="${escapeText(tab.id)}">${escapeText(tab.name)}</button>${tab.id==='showcase'?'':`<button class="workspace-tab-close" data-workspace-close="${escapeText(tab.id)}" aria-label="关闭 ${escapeText(tab.name)}">×</button>`}</span>`).join('');
+    tabsRoot.querySelectorAll<HTMLButtonElement>('[data-workspace-id]').forEach(button=>button.onclick=()=>switchWorkspace(button.dataset.workspaceId!));
+    tabsRoot.querySelectorAll<HTMLButtonElement>('[data-workspace-close]').forEach(button=>button.onclick=()=>{
+      const id=button.dataset.workspaceClose!;workspaceTabs=workspaceTabs.filter(tab=>tab.id!==id);persistTabs();
+      if(id===activeWorkspace)switchWorkspace('showcase');else renderTabs();
+    });
+    document.querySelector('[data-graph-name]')!.textContent=workspaceTabs.find(t=>t.id===activeWorkspace)?.name||'工作台';
+    syncLock();
+  };
   renderTabs();persistTabs();
-  document.querySelector<HTMLButtonElement>('[data-workspace-add]')!.onclick=()=>{const id=`workspace-${Date.now()}`;const name=`工作台 ${workspaceTabs.length}`;workspaceTabs.push({id,name});persistTabs();switchWorkspace(id);};
-  const defaults = (): Item[] => [{id:'home',kind:'location',x:32,y:32,w:360,h:320},{id:'words',kind:'quote',x:424,y:96,w:360,h:290},{id:'profile',kind:'intro',x:220,y:430,w:440,h:310},{id:'contact',kind:'contact',x:690,y:450,w:390,h:230},{id:'time',kind:'time',x:690,y:710,w:390,h:210},{id:'media',kind:'nowplaying',x:32,y:780,w:360,h:270},{id:'logs',kind:'terminal',x:424,y:780,w:420,h:270},{id:'stack',kind:'stack',x:890,y:780,w:300,h:240},{id:'chiaki',kind:'live2d',x:890,y:1040,w:380,h:380},{id:'articles',kind:'article',x:32,y:1080,w:520,h:360},{id:'weather',kind:'weather',x:580,y:1080,w:360,h:280},{id:'system',kind:'system',x:32,y:1480,w:420,h:300}];
-  let items = defaults();
+  document.querySelector<HTMLButtonElement>('[data-workspace-add]')!.onclick=()=>{const id=`workspace-${Date.now()}`;workspaceTabs.push({id,name:`工作台 ${workspaceTabs.length}`});persistTabs();switchWorkspace(id);};
+  const defaults = (): Item[] => [{id:'profile',kind:'intro',x:0,y:0,w:600,h:780},{id:'contact',kind:'contact',x:225,y:494,w:488,h:312,parentId:'profile'},{id:'time',kind:'time',x:0,y:780,w:600,h:312},{id:'stack',kind:'stack',x:0,y:1060,w:600,h:320},{id:'home',kind:'location',x:600,y:0,w:400,h:340},{id:'weather',kind:'weather',x:1000,y:0,w:440,h:340},{id:'media',kind:'nowplaying',x:600,y:340,w:400,h:440},{id:'dashboard',kind:'dashboard',x:1000,y:340,w:440,h:440},{id:'articles',kind:'article',x:600,y:780,w:840,h:600}];
+  // Keep the user's composition; separate nodes into Blueprint lanes.
+  const originalDefaults=defaults;
+  const graphDefaults=():Item[]=>originalDefaults().map(item=>({...item,
+    x:item.parentId?item.x:item.x===0?64:item.x===600?736:1240,
+    y:item.parentId?item.y:item.y===0?64:item.y===340?468:item.y===780?976:1352
+  }));
+  let items = graphDefaults();
   let topLayer = 1;
+  let workspaceScale = 1;
   let liveAvatar:any = null;
   let hasSavedLayout = false;
   const quotes = [['千里之行，始于足下。','《老子》'],['不积跬步，无以至千里。','《荀子·劝学》'],['山重水复疑无路，柳暗花明又一村。','陆游'],['纸上得来终觉浅，绝知此事要躬行。','陆游']];
-  try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (Array.isArray(saved)) { hasSavedLayout = true; items = saved.filter((v) => v && typeof v.id === 'string' && ['location','quote','intro','contact','time','nowplaying','terminal','stack','dashboard','live2d','article','weather','system'].includes(v.kind) && ['x','y','w','h'].every(k => Number.isFinite(v[k]))).slice(0,20).map(v => ({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(180,Math.min(800,v.w)),h:Math.max(140,Math.min(700,v.h))})); } } catch {}
-  if (!hasSavedLayout && !items.some(item => item.kind === 'intro')) items.push({id:'profile',kind:'intro',x:220,y:430,w:440,h:310});
-  if (!hasSavedLayout && !items.some(item => item.kind === 'contact')) items.push({id:'contact',kind:'contact',x:690,y:450,w:390,h:230});
-  if (!hasSavedLayout && !items.some(item => item.kind === 'time')) items.push({id:'time',kind:'time',x:690,y:710,w:390,h:210});
-  if (!hasSavedLayout && !items.some(item => item.kind === 'nowplaying')) items.push({id:'media',kind:'nowplaying',x:32,y:780,w:360,h:270});
-  if (!hasSavedLayout && !items.some(item => item.kind === 'terminal')) items.push({id:'logs',kind:'terminal',x:424,y:780,w:420,h:270});
-  if (!hasSavedLayout && !items.some(item => item.kind === 'stack')) items.push({id:'stack',kind:'stack',x:890,y:780,w:300,h:240});
-  // Keep one verified Chiaki Nanami GLB viewport in the workspace.
-  if (!hasSavedLayout && !items.some(item => item.kind === 'live2d')) items.push({id:'chiaki',kind:'live2d',x:890,y:1040,w:380,h:380});
-  if (!hasSavedLayout && !items.some(item => item.kind === 'dashboard')) items.push({id:'dashboard',kind:'dashboard',x:890,y:1040,w:420,h:360});
-  if (!hasSavedLayout && !items.some(item => item.kind === 'article')) items.push({id:'articles',kind:'article',x:32,y:1460,w:520,h:360});
-  if (!hasSavedLayout && !items.some(item => item.kind === 'weather')) items.push({id:'weather',kind:'weather',x:580,y:1080,w:360,h:280});
-  if (!hasSavedLayout && !items.some(item => item.kind === 'system')) items.push({id:'system',kind:'system',x:32,y:1840,w:420,h:300});
-  if(activeWorkspace!=='showcase'&&!localStorage.getItem(key))items=[];
-  function save() { try { localStorage.setItem(key,JSON.stringify(items)); status.textContent = '布局已保存到此浏览器'; } catch { status.textContent = '无法保存，当前布局仅本次有效'; } }
-  function switchWorkspace(id:string){if(id===activeWorkspace)return;save();if(liveAvatar){liveAvatar.destroy();liveAvatar=null;}activeWorkspace=id;key=`myrt1e-workspace-v1-${id}`;items=defaults();let loaded=false;try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(Array.isArray(saved)){loaded=true;items=saved.filter((v)=>v&&typeof v.id==='string'&&['location','quote','intro','contact','time','nowplaying','terminal','stack','dashboard','live2d','article','weather','system'].includes(v.kind)&&['x','y','w','h'].every(k=>Number.isFinite(v[k]))).slice(0,20).map(v=>({...v,x:Math.max(0,Math.min(2000,v.x)),y:Math.max(0,Math.min(2000,v.y)),w:Math.max(260,Math.min(800,v.w)),h:Math.max(250,Math.min(700,v.h))}));}}catch{}if(!loaded&&id!=='showcase')items=[];canvas.querySelectorAll('.workspace-widget').forEach(widget=>widget.remove());items.filter(i=>!i.parentId).forEach(mount);items.filter(i=>i.parentId).forEach(mount);extent();renderTabs();history.pushState({workspace:id},'',`${location.pathname}?workspace=${encodeURIComponent(id)}#main-content`);document.querySelector('.canvas-scroll')?.scrollTo({top:0,behavior:'smooth'});status.textContent=`已切换至 ${workspaceTabs.find(tab=>tab.id===id)?.name||'工作台'}`;}
-  function extent() { canvas.style.minWidth = `${Math.max(320,...items.filter(i=>!i.parentId).map(i=>i.x+i.w+24))}px`; canvas.style.minHeight = `${Math.max(640,...items.map(i=>i.y+i.h+32))}px`; document.querySelector<HTMLElement>('[data-empty]')!.hidden = items.length > 0; }
-  function position(el:HTMLElement,item:Item) { Object.assign(el.style,{left:`${item.x}px`,top:`${item.y}px`,width:`${item.w}px`,height:`${item.h}px`}); }
+  const viewport=document.querySelector<HTMLElement>('.canvas-scroll')!;
+  let camera={x:32,y:32};
+  let selectedId:string|null=null;
+  let cameraFrame=0;
+  const normalizeItems=(value:unknown):Item[]=>Array.isArray(value)?value.filter((v:any)=>v&&typeof v.id==='string'&&document.getElementById(`${v.kind}-widget`)&&['x','y','w','h'].every(k=>Number.isFinite(v[k]))).slice(0,20).map((v:any)=>({...v,w:Math.max(180,v.w),h:Math.max(140,v.h)})):[];
+  function loadLayout(id:string):Item[]{
+    if(id==='showcase'){
+      if(displayMode==='homepage'){
+        // The personal archive is rendered by HomeProfile; keep the blueprint canvas empty
+        // so its widgets do not duplicate API requests or create hidden timers/players.
+        return [];
+      }
+      const draft=showcaseEditMode?(()=>{try{return JSON.parse(localStorage.getItem('myrt1e-showcase-draft')||'null');}catch{return null;}})():null;
+      const source=normalizeItems(draft?.items||draft);
+      return source.length?source:normalizeItems(publishedShowcase.items);
+    }
+    try{const saved=JSON.parse(localStorage.getItem(`myrt1e-workspace-v1-${id}`)||'null');
+      const source=normalizeItems(saved?.items||saved);if(source.length)return source;
+    }catch{}
+    return [];
+  }
+  items=loadLayout(activeWorkspace);
+  function save(){if(!editable())return;try{localStorage.setItem(activeWorkspace==='showcase'?'myrt1e-showcase-draft':key,JSON.stringify({version:1,items}));status.textContent='布局已保存';}catch{status.textContent='无法保存到浏览器';}}
+  function renderWorkspace(){
+    if(liveAvatar){liveAvatar.destroy();liveAvatar=null;}
+    canvas.querySelectorAll('.workspace-widget').forEach(el=>el.remove());
+    selectedId=null;items.filter(i=>!i.parentId).forEach(mount);items.filter(i=>i.parentId).forEach(mount);
+    renderTabs();extent();requestAnimationFrame(fitView);
+  }
+  function switchWorkspace(id:string){
+    if(id===activeWorkspace)return;rememberScroll();save();activeWorkspace=id;key=`myrt1e-workspace-v1-${id}`;
+    displayMode=id==='showcase'&&!showcaseEditMode?'homepage':'workbench';
+    showcaseLocked=id==='showcase' && !showcaseEditMode;
+    items=loadLayout(id);renderWorkspace();
+    const next=new URL(location.href);next.searchParams.set('workspace',id);next.searchParams.delete('edit');if(id==='showcase')next.searchParams.delete('view');else next.searchParams.set('view','workbench');next.hash='main-content';history.replaceState({workspace:id,view:displayMode},'',next.toString());restoreScroll();
+  }
+  function setHomepage(){
+    if(activeWorkspace!=='showcase'){switchWorkspace('showcase');}
+    displayMode='homepage';showcaseLocked=true;syncLock();extent();requestAnimationFrame(fitView);
+  }
+  function setWorkbench(){
+    const target=activeWorkspace==='showcase'?workspaceTabs.find(tab=>tab.id!=='showcase')?.id:activeWorkspace;
+    if(target&&target!==activeWorkspace){switchWorkspace(target);return;}
+    if(!target){const id=`workspace-${Date.now()}`;workspaceTabs.push({id,name:`工作台 ${workspaceTabs.filter(tab=>tab.id!=='showcase').length+1}`});persistTabs();activeWorkspace=id;key=`myrt1e-workspace-v1-${id}`;items=[];displayMode='workbench';showcaseLocked=false;renderWorkspace();const next=new URL(location.href);next.searchParams.set('workspace',id);next.searchParams.set('view','workbench');next.searchParams.delete('edit');next.hash='main-content';history.replaceState({workspace:id,view:'workbench'},'',next.toString());return;}
+    displayMode='workbench';showcaseLocked=activeWorkspace==='showcase'&&!showcaseEditMode;syncLock();extent();requestAnimationFrame(fitView);
+  }
+  window.addEventListener('myrtle:open-workbench',()=>setWorkbench());
+  homeViewButton.onclick=setHomepage;workbenchViewButton.onclick=setWorkbench;
+  function applyCamera(){
+    if(displayMode==='homepage'){canvas.style.transform='none';canvas.style.zoom='1';canvas.style.width='';canvas.style.height='';viewport.style.backgroundPosition='0 0';viewport.style.backgroundSize='auto';document.querySelector('[data-zoom]')!.textContent='主页';return;}
+    if(mobile()|| (activeWorkspace==='showcase'&&showcaseLocked)){canvas.style.transform='none';canvas.style.zoom='1';viewport.style.backgroundPosition='0 0';if(activeWorkspace==='showcase'&&showcaseLocked)document.querySelector('[data-zoom]')!.textContent='适配';return;}
+    canvas.style.zoom='1';canvas.style.transform=`translate(${camera.x}px,${camera.y}px) scale(${workspaceScale})`;
+    viewport.style.backgroundSize=`${24*workspaceScale}px ${24*workspaceScale}px, ${24*workspaceScale}px ${24*workspaceScale}px, ${120*workspaceScale}px ${120*workspaceScale}px, ${120*workspaceScale}px ${120*workspaceScale}px`;
+    viewport.style.backgroundPosition=`${camera.x}px ${camera.y}px`;
+    document.querySelector('[data-zoom]')!.textContent=`${Math.round(workspaceScale*100)}%`;
+  }
+  function fitView(){
+    if(displayMode==='homepage'){applyCamera();return;}
+    if(mobile()){applyCamera();return;}
+    if(activeWorkspace==='showcase'&&showcaseLocked){
+      const baseWidth=publishedShowcase.baseWidth||1600,baseHeight=publishedShowcase.baseHeight||1680;
+      canvas.style.width='100%';canvas.style.height='100%';
+      workspaceScale=1;camera={x:0,y:0};
+      canvas.querySelectorAll<HTMLElement>('.workspace-widget').forEach(el=>{const item=items.find(value=>value.id===el.dataset.itemId);if(item)position(el,item);});
+      applyCamera();return;
+    }
+    const roots=items.filter(i=>!i.parentId);
+    const x=Math.min(0,...roots.map(i=>i.x)),y=Math.min(0,...roots.map(i=>i.y));
+    const w=Math.max(600,...roots.map(i=>i.x+i.w))-x,h=Math.max(400,...roots.map(i=>i.y+i.h))-y;
+    workspaceScale=Math.max(.15,Math.min(1,(viewport.clientWidth-48)/w,(viewport.clientHeight-48)/h));
+    // Keep the world origin near the viewport, but do not clamp the world itself.
+    // Nodes may live at negative coordinates and are revealed by panning.
+    camera={x:24-x*workspaceScale,y:24-y*workspaceScale};
+    applyCamera();
+  }
+  function zoomAt(scale:number,x=viewport.clientWidth/2,y=viewport.clientHeight/2){
+    const next=Math.max(.15,Math.min(2,scale)),ratio=next/workspaceScale;
+    camera={x:x-(x-camera.x)*ratio,y:y-(y-camera.y)*ratio};workspaceScale=next;applyCamera();
+  }
+  function inspect(){
+    const item=items.find(i=>i.id===selectedId);
+    document.querySelector<HTMLElement>('[data-detail]')!.hidden=!item;
+    document.querySelector<HTMLElement>('[data-detail-empty]')!.hidden=!!item;
+    if(!item)return;
+    const label=document.querySelector(`[data-add="${item.kind}"] strong`)?.textContent||item.kind;
+    document.querySelector('[data-detail-name]')!.textContent=label;
+    for(const field of ['x','y','w','h'] as const)document.querySelector(`[data-detail-${field}]`)!.textContent=String(Math.round(item[field]));
+    document.querySelector('[data-detail-parent]')!.textContent=item.parentId?'个人简介':'画布';
+  }
+  function selectNode(id:string){
+    selectedId=id;canvas.querySelectorAll<HTMLElement>('.workspace-widget').forEach(el=>{el.classList.toggle('is-selected',el.dataset.itemId===id);if(el.dataset.itemId===id)el.style.zIndex=String(++topLayer);});inspect();
+  }
+  function extent(){
+    if(displayMode==='homepage'){canvas.style.width='';canvas.style.height='';}
+    else{
+      // Keep a generous virtual canvas so the editor never feels bounded by its current nodes.
+      canvas.style.width=`${Math.max(10000,...items.filter(i=>!i.parentId).map(i=>i.x+i.w+96))}px`;
+      canvas.style.height=`${Math.max(10000,...items.filter(i=>!i.parentId).map(i=>i.y+i.h+96))}px`;
+    }
+    document.querySelector<HTMLElement>('[data-empty]')!.hidden=items.length>0;
+    document.querySelector('[data-node-count]')!.textContent=String(items.length);
+    const outline=document.querySelector('[data-outline]')!;
+    outline.replaceChildren(...items.map(item=>{const button=document.createElement('button');button.textContent=(item.parentId?'  ↳ ':'◇ ')+(document.querySelector(`[data-add="${item.kind}"] strong`)?.textContent||item.kind);button.onclick=()=>{selectNode(item.id);focusNode();};return button;}));
+    inspect();
+  }
+  function focusNode(){
+    const selected=items.find(i=>i.id===selectedId);if(!selected)return;
+    const item=items.find(i=>i.id===selected.parentId)||selected;
+    if(mobile()){canvas.querySelector<HTMLElement>(`[data-item-id="${item.id}"]`)?.scrollIntoView({block:'center'});return;}
+    workspaceScale=Math.min(1,(viewport.clientWidth-64)/item.w,(viewport.clientHeight-64)/item.h);
+    camera={x:(viewport.clientWidth-item.w*workspaceScale)/2-item.x*workspaceScale,y:(viewport.clientHeight-item.h*workspaceScale)/2-item.y*workspaceScale};applyCamera();
+  }
+  function position(el:HTMLElement,item:Item){
+    if(displayMode==='homepage'){Object.assign(el.style,{left:'',top:'',width:'',height:'',transform:'',zIndex:''});return;}
+    if(activeWorkspace==='showcase'&&showcaseLocked){
+      const parent=item.parentId?items.find(value=>value.id===item.parentId):undefined;
+      const xBase=parent?.w||publishedShowcase.baseWidth||1600,yBase=parent?.h||publishedShowcase.baseHeight||1680;
+      Object.assign(el.style,{left:`${item.x/xBase*100}%`,top:`${item.y/yBase*100}%`,width:`${item.w/xBase*100}%`,height:`${item.h/yBase*100}%`});
+      return;
+    }
+    Object.assign(el.style,{left:`${item.x}px`,top:`${item.y}px`,width:`${item.w}px`,height:`${item.h}px`});
+  }
   const snap=(value:number,step=16)=>Math.round(value/step)*step;
   function snapToPeers(item:Item,x:number,y:number){
     const threshold=14;let nx=x,ny=y;const peers=items.filter(peer=>peer.id!==item.id&&!peer.parentId);
     for(const peer of peers){const xTargets=[peer.x,peer.x+peer.w,peer.x+peer.w-(item.w||0)];const yTargets=[peer.y,peer.y+peer.h,peer.y+peer.h-(item.h||0)];for(const target of xTargets){if(Math.abs(nx-target)<=threshold){nx=target;break;}}for(const target of yTargets){if(Math.abs(ny-target)<=threshold){ny=target;break;}}}
     return {x:nx,y:ny};
   }
+  function snapResize(item:Item,w:number,h:number){
+    const threshold=14;let nw=w,nh=h;const peers=items.filter(peer=>peer.id!==item.id&&!peer.parentId);
+    const nearest=(value:number,targets:number[])=>{const target=targets.find(candidate=>Math.abs(value-candidate)<=threshold);return target===undefined?value:target;};
+    nw=nearest(nw,peers.flatMap(peer=>[peer.x-item.x,peer.x+peer.w-item.x]));
+    nh=nearest(nh,peers.flatMap(peer=>[peer.y-item.y,peer.y+peer.h-item.y]));
+    return {w:nw,h:nh};
+  }
   function clock() { document.querySelectorAll<HTMLElement>('[data-wuhan-time]').forEach(el => { const timeZone = el.dataset.timezone || 'Asia/Shanghai'; el.textContent = new Intl.DateTimeFormat('en-GB',{timeZone,hour:'2-digit',minute:'2-digit'}).format(new Date()); }); }
   function mount(item:Item) {
     item.w=Math.max(180,item.w);item.h=Math.max(140,item.h);
     const el = document.createElement('article'); el.className = `workspace-widget${item.parentId ? ' workspace-child' : ''}`; el.dataset.itemId=item.id; el.dataset.itemKind=item.kind; position(el,item);
+    el.addEventListener('pointerdown',()=>selectNode(item.id));
     // Keep the canvas as a valid drop surface even when a widget is underneath the pointer.
     el.addEventListener('dragover',event=>{event.preventDefault();if(event.dataTransfer)event.dataTransfer.dropEffect='copy';},true);
     const head = document.createElement('div'); head.className = 'widget-head';
@@ -108,7 +293,7 @@ import "../styles/workspace.css";
     const content=document.createElement('div');content.className='widget-content';content.append((document.getElementById(`${item.kind}-widget`) as HTMLTemplateElement).content.cloneNode(true));
     const resize=document.createElement('button');resize.className='widget-resize';resize.setAttribute('aria-label','调整大小：拖动或使用方向键');
     el.append(head,content,resize);const parentDrop=item.parentId ? canvas.querySelector<HTMLElement>(`[data-item-id="${item.parentId}"] [data-child-drop]`) : null;(parentDrop || canvas).append(el);
-    close.onclick=()=>{items=items.filter(i=>i!==item && i.parentId!==item.id);el.remove();extent();save();};
+    close.onclick=()=>{if(!editable())return;items=items.filter(i=>i!==item && i.parentId!==item.id);el.remove();extent();save();};
     if(item.kind==='quote'){
       let n=0;
       const update=(text=quotes[n][0],author=quotes[n][1])=>{content.querySelector('[data-quote]')!.textContent=text;content.querySelector('[data-author]')!.textContent=author;};
@@ -135,25 +320,7 @@ import "../styles/workspace.css";
       const home=content.querySelector<HTMLElement>('[data-home-time]');const visitor=content.querySelector<HTMLElement>('[data-visitor-time]');const visitorZone=content.querySelector<HTMLElement>('[data-visitor-zone]');const delta=content.querySelector<HTMLElement>('[data-time-delta]');const deltaHome=content.querySelector<HTMLElement>('[data-time-delta-home]');const homeZone='Asia/Shanghai';let visitorTimezone=Intl.DateTimeFormat().resolvedOptions().timeZone || 'LOCAL';const offset=(zone:string,date:Date)=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(date).reduce((out:any,p)=>{out[p.type]=p.value;return out;},{});return (Date.UTC(Number(parts.year),Number(parts.month)-1,Number(parts.day),Number(parts.hour)%24,Number(parts.minute),Number(parts.second))-date.getTime())/60000;};const render=()=>{const now=new Date();if(home)home.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:homeZone,hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(now);if(visitor)visitor.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:visitorTimezone,hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(now);if(visitorZone)visitorZone.textContent=visitorTimezone;const difference=Math.round(offset(visitorTimezone,now)-offset(homeZone,now));const sign=difference===0?'±':difference>0?'+':'−';const absolute=Math.abs(difference);const hours=Math.floor(absolute/60),minutes=absolute%60;const readable=`${sign}${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}`;if(deltaHome)deltaHome.textContent=`${readable} VS VISITOR`;if(delta)delta.textContent=`${readable} OFFSET`;};render();fetch('/api/location').then(response=>response.ok?response.json():null).then(data=>{if(data?.timezone?.id)visitorTimezone=data.timezone.id;render();}).catch(()=>{});window.setInterval(render,1000);
     }
     if(item.kind==='nowplaying'){
-      const tracks=[{title:'RTRT',id:'IcpzqZrpLVM'},{title:'Ga1ahad and Scientific Witchery',id:'d-nxW9qBtxQ'},{title:'world.execute(me);',id:'ESx_hy1n7HA'}];
-      let trackIndex=0, playing=false, elapsed=0;
-      const toggle=content.querySelector<HTMLButtonElement>('[data-player-toggle]')!;
-      const embed=content.querySelector<HTMLIFrameElement>('[data-player-embed]');
-      const render=()=>{
-        content.querySelector('[data-track-title]')!.textContent=tracks[trackIndex].title;
-        content.querySelector<HTMLElement>('[data-progress]')!.style.width=`${elapsed/180*100}%`;
-        content.querySelector('[data-player-time]')!.textContent=`${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;
-        content.querySelector('[data-player-state]')!.textContent=playing?'播放中 · YouTube 官方':'点击播放 · YouTube 官方';
-        toggle.setAttribute('aria-pressed',String(playing));
-        toggle.setAttribute('aria-label',playing?'暂停 Mili':'播放 Mili');
-        toggle.innerHTML=playing?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7Z"/></svg>';
-        content.classList.toggle('is-playing',playing);
-      };
-      toggle.onclick=()=>{playing=!playing;if(embed)embed.src=playing?`https://www.youtube-nocookie.com/embed/${tracks[trackIndex].id}?autoplay=1&playsinline=1` : '';render();};
-      content.querySelector<HTMLButtonElement>('[data-player-next]')!.onclick=()=>{trackIndex=(trackIndex+1)%tracks.length;elapsed=0;playing=false;if(embed)embed.src='';render();};
-      content.querySelector<HTMLButtonElement>('[data-player-prev]')!.onclick=()=>{trackIndex=(trackIndex+tracks.length-1)%tracks.length;elapsed=0;playing=false;if(embed)embed.src='';render();};
-      render();
-      const ticker=window.setInterval(()=>{if(!el.isConnected){clearInterval(ticker);return;}if(playing&&!document.hidden){elapsed=(elapsed+1)%180;render();}},1000);
+      bindMusic(content);
     }
     if(item.kind==='terminal'){
       const body=content.querySelector<HTMLElement>('[data-terminal-body]');
@@ -205,46 +372,55 @@ import "../styles/workspace.css";
       const load=()=>fetch('/api/system').then(r=>r.ok?r.json():Promise.reject()).then(data=>{const c=Math.round(data.cpu||0),m=Math.round(data.memory||0);if(cpu)cpu.textContent=`${c}%`;if(mem)mem.textContent=`${m}%`;if(cpuBar)cpuBar.style.width=`${c}%`;if(memBar)memBar.style.width=`${m}%`;if(updated)updated.textContent=`UPTIME ${data.uptime||'--'}`;if(online)online.textContent='● ONLINE';dot('[data-service-api]',true);dot('[data-service-github]',!!data.services?.github);dot('[data-service-waka]',!!data.services?.wakatime);}).catch(()=>{if(online)online.textContent='● DEGRADED';dot('[data-service-api]',false);if(updated)updated.textContent='STATUS UNAVAILABLE';});load();const ticker=window.setInterval(()=>{if(!el.isConnected){clearInterval(ticker);return;}load();},60000);
     }
     function bind(control:HTMLElement, resizing:boolean) {
-      control.addEventListener('pointerdown', e=>{if(e.button!==0)return;e.preventDefault();control.setPointerCapture(e.pointerId);el.style.zIndex=String(++topLayer);el.classList.add('is-active'); const start={...item},sx=e.clientX,sy=e.clientY;
-        const move=(ev:PointerEvent)=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;if(resizing){item.w=Math.min(800,Math.max(180,snap(start.w+dx)));item.h=Math.min(700,Math.max(140,snap(start.h+dy)));}else{const peer=snapToPeers(item,start.x+dx,start.y+dy);item.x=Math.min(2000,Math.max(0,Math.abs(peer.x-(start.x+dx))<=14?peer.x:snap(start.x+dx)));item.y=Math.min(2000,Math.max(0,Math.abs(peer.y-(start.y+dy))<=14?peer.y:snap(start.y+dy)));}position(el,item);extent();};
+      control.addEventListener('pointerdown', e=>{if(e.button!==0||!editable())return;e.preventDefault();control.setPointerCapture(e.pointerId);el.style.zIndex=String(++topLayer);el.classList.add('is-active'); const start={...item},sx=e.clientX,sy=e.clientY;
+        const move=(ev:PointerEvent)=>{const dx=(ev.clientX-sx)/workspaceScale,dy=(ev.clientY-sy)/workspaceScale;if(resizing){const size=snapResize(item,snap(start.w+dx),snap(start.h+dy));item.w=Math.max(180,size.w);item.h=Math.max(140,size.h);}else{const peer=snapToPeers(item,start.x+dx,start.y+dy);item.x=Math.abs(peer.x-(start.x+dx))<=14?peer.x:snap(start.x+dx);item.y=Math.abs(peer.y-(start.y+dy))<=14?peer.y:snap(start.y+dy);}position(el,item);extent();};
         const end=()=>{control.removeEventListener('pointermove',move);control.removeEventListener('pointerup',end);control.removeEventListener('pointercancel',end);el.classList.remove('is-active');save();};control.addEventListener('pointermove',move);control.addEventListener('pointerup',end);control.addEventListener('pointercancel',end);
       });
-      control.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const dx=e.key==='ArrowLeft'?-8:e.key==='ArrowRight'?8:0,dy=e.key==='ArrowUp'?-8:e.key==='ArrowDown'?8:0;if(resizing){item.w=Math.max(180,Math.min(800,item.w+dx));item.h=Math.max(140,Math.min(700,item.h+dy));}else{item.x=Math.max(0,Math.min(2000,item.x+dx));item.y=Math.max(0,Math.min(2000,item.y+dy));}position(el,item);extent();save();});
+      control.addEventListener('keydown',e=>{if(!editable()||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const dx=e.key==='ArrowLeft'?-8:e.key==='ArrowRight'?8:0,dy=e.key==='ArrowUp'?-8:e.key==='ArrowDown'?8:0;if(resizing){item.w=Math.max(180,item.w+dx);item.h=Math.max(140,item.h+dy);}else{item.x+=dx;item.y+=dy;}position(el,item);extent();save();});
     }
     bind(handle,false);bind(resize,true);clock();
   }
-  function add(kind:Kind,x=40+items.length*24,y=40+items.length*24,parentId?:string){if(items.length>=20){status.textContent='最多放置 20 个控件';return;}const item={id:crypto.randomUUID(),kind,x:Math.max(0,x),y:Math.max(0,y),w:kind==='intro'?440:kind==='contact'?390:kind==='time'?390:kind==='nowplaying'?360:kind==='terminal'?420:kind==='stack'?300:kind==='dashboard'?480:kind==='live2d'?380:kind==='article'?520:360,h:kind==='location'?320:kind==='intro'?310:kind==='contact'?230:kind==='time'?210:kind==='nowplaying'?270:kind==='terminal'?270:kind==='stack'?240:kind==='dashboard'?360:kind==='live2d'?340:kind==='article'?360:290,parentId};items.push(item);mount(item);extent();save();}
-  document.querySelectorAll<HTMLButtonElement>('[data-add]').forEach(button=>{button.onclick=()=>add(button.dataset.add as Kind);button.ondragstart=e=>{e.dataTransfer?.setData('text/plain',button.dataset.add!);if(e.dataTransfer)e.dataTransfer.effectAllowed='copy';};});
-  canvas.ondragover=e=>{e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='copy';};
-  canvas.ondrop=null;
-  canvas.addEventListener('dragenter',event=>{event.preventDefault();canvas.classList.add('is-drop-target');},true);
-  canvas.addEventListener('dragleave',event=>{if(event.target===canvas)canvas.classList.remove('is-drop-target');},true);
-  canvas.addEventListener('dragover',event=>{event.preventDefault();if(event.dataTransfer)event.dataTransfer.dropEffect='copy';canvas.classList.add('is-drop-target');},true);
-  canvas.addEventListener('drop',event=>{event.preventDefault();canvas.classList.remove('is-drop-target');const kind=event.dataTransfer?.getData('text/plain');if(kind==='location'||kind==='quote'||kind==='intro'||kind==='contact'||kind==='time'||kind==='nowplaying'||kind==='terminal'||kind==='stack'||kind==='dashboard'||kind==='live2d'||kind==='article'||kind==='weather'||kind==='system'){const target=(event.target as HTMLElement).closest<HTMLElement>('[data-item-kind="intro"]');const r=canvas.getBoundingClientRect();const parentId=kind==='contact'&&target ? target.dataset.itemId : undefined;add(kind,event.clientX-r.left,event.clientY-r.top,parentId);if(parentId)status.textContent='联系我已嵌入个人简介';}},true);
-  document.querySelector<HTMLButtonElement>('[data-reset]')!.onclick=()=>{canvas.querySelectorAll('.workspace-widget').forEach(el=>el.remove());items=defaults();items.forEach(mount);arrange();};
-  function arrange(persist=true){
-    const width=Math.max(320,canvas.parentElement!.clientWidth);
-    const columns=width>=1180?3:width>=780?2:1;
-    const gap=20, padding=24, w=Math.min(520,(width-padding*2-gap*(columns-1))/columns);
-    const heights=Array(columns).fill(padding);
-    const order:Kind[]=['intro','article','nowplaying','dashboard','live2d','location','time','stack','quote','terminal','contact'];
-    [...items].filter(i=>!i.parentId).sort((a,b)=>order.indexOf(a.kind)-order.indexOf(b.kind)).forEach(item=>{
-      const column=heights.indexOf(Math.min(...heights));
-      item.x=padding+column*(w+gap);item.y=heights[column];item.w=w;
-      item.h=item.kind==='intro'?590:item.kind==='nowplaying'?470:item.kind==='dashboard'?420:item.kind==='live2d'?380:item.kind==='location'?330:item.kind==='time'?280:item.kind==='stack'?520:310;
-      heights[column]+=item.h+gap;
-      const element=Array.from(canvas.querySelectorAll<HTMLElement>('[data-item-id]')).find(el=>el.dataset.itemId===item.id);
-      if(element)position(element,item);
-    });
-    extent();window.dispatchEvent(new Event('resize'));if(persist)save();
+  function add(kind:Kind,x=40+items.length*24,y=40+items.length*24,parentId?:string){if(!editable()){status.textContent='移动端为单列阅读模式';return;}if(items.length>=20){status.textContent='最多放置 20 个控件';return;}const item={id:crypto.randomUUID(),kind,x,y,w:kind==='intro'?440:kind==='contact'?390:kind==='time'?390:kind==='nowplaying'?360:kind==='terminal'?420:kind==='stack'?300:kind==='dashboard'?480:kind==='live2d'?380:kind==='article'?520:360,h:kind==='location'?320:kind==='intro'?310:kind==='contact'?230:kind==='time'?210:kind==='nowplaying'?270:kind==='terminal'?270:kind==='stack'?240:kind==='dashboard'?360:kind==='live2d'?340:kind==='article'?360:290,parentId};items.push(item);mount(item);extent();save();}
+  document.querySelectorAll<HTMLButtonElement>('[data-add]').forEach(button=>{
+    button.onclick=()=>{const kind=button.dataset.add as Kind;add(kind,Math.max(0,(viewport.clientWidth/2-camera.x)/workspaceScale-180),Math.max(0,(viewport.clientHeight/2-camera.y)/workspaceScale-120));};
+    button.ondragstart=e=>{if(!editable()){e.preventDefault();return;}e.dataTransfer?.setData('text/plain',button.dataset.add!);if(e.dataTransfer)e.dataTransfer.effectAllowed='copy';};
+  });
+  viewport.addEventListener('dragover',e=>{if(!editable())return;e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='copy';});
+  viewport.addEventListener('drop',e=>{
+    if(!editable())return;e.preventDefault();
+    const kind=e.dataTransfer?.getData('text/plain') as Kind;
+    if(!document.getElementById(`${kind}-widget`))return;
+    const r=viewport.getBoundingClientRect(),target=(e.target as HTMLElement).closest<HTMLElement>('[data-item-kind="intro"]');
+    add(kind,(e.clientX-r.left-camera.x)/workspaceScale,(e.clientY-r.top-camera.y)/workspaceScale,kind==='contact'?target?.dataset.itemId:undefined);
+  });
+  viewport.addEventListener('wheel',e=>{
+    if(mobile()||!editable()||e.ctrlKey)return;
+    if((e.target as HTMLElement).closest('.workspace-widget'))return;
+    e.preventDefault();const r=viewport.getBoundingClientRect();zoomAt(workspaceScale*Math.exp(-e.deltaY*.0015),e.clientX-r.left,e.clientY-r.top);
+  },{passive:false});
+  viewport.addEventListener('pointerdown',e=>{
+    if(mobile()||!editable()||(e.button!==0&&e.button!==1)||(e.button===0&&(e.target as HTMLElement).closest('.workspace-widget')))return;
+    e.preventDefault();viewport.setPointerCapture(e.pointerId);viewport.classList.add('is-panning');
+    const start={...camera},x=e.clientX,y=e.clientY;
+    const move=(event:PointerEvent)=>{camera={x:start.x+event.clientX-x,y:start.y+event.clientY-y};applyCamera();};
+    const end=()=>{viewport.classList.remove('is-panning');viewport.removeEventListener('pointermove',move);viewport.removeEventListener('pointerup',end);viewport.removeEventListener('pointercancel',end);};
+    viewport.addEventListener('pointermove',move);viewport.addEventListener('pointerup',end);viewport.addEventListener('pointercancel',end);
+  });
+  viewport.addEventListener('keydown',e=>{if((e.target as HTMLElement).matches('input,textarea'))return;if(e.key.toLowerCase()==='f'){e.preventDefault();fitView();}});
+  document.querySelectorAll<HTMLButtonElement>('[data-camera]').forEach(button=>button.onclick=()=>{const action=button.dataset.camera;if(action==='fit')fitView();else zoomAt(action==='reset'?1:workspaceScale*(action==='in'?1.2:1/1.2));});
+  document.querySelector<HTMLButtonElement>('[data-focus-node]')!.onclick=focusNode;
+  document.querySelector<HTMLButtonElement>('[data-reset]')!.onclick=()=>{if(!editable())return;items=activeWorkspace==='showcase'?normalizeItems(publishedShowcase.items):graphDefaults();renderWorkspace();save();};
+  document.querySelector<HTMLButtonElement>('[data-publish]')!.onclick=async()=>{if(activeWorkspace!=='showcase'||!editable())return;const button=document.querySelector<HTMLButtonElement>('[data-publish]')!;button.disabled=true;status.textContent='正在发布展示布局';try{const roots=items.filter(item=>!item.parentId);const baseWidth=Math.max(1,...roots.map(item=>item.x+item.w));const baseHeight=Math.max(1,...roots.map(item=>item.y+item.h));const response=await fetch('/api/layout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({version:1,baseWidth,baseHeight,items})});if(!response.ok)throw new Error('publish failed');status.textContent='展示布局已发布';}catch{status.textContent='发布失败，当前草稿仍已保留';}finally{button.disabled=false;}};
+  document.querySelector<HTMLButtonElement>('[data-toggle-lock]')!.onclick=()=>{if(activeWorkspace!=='showcase'||!showcaseEditMode)return;const next=new URL(location.href);if(showcaseLocked)next.searchParams.set('edit','1');else next.searchParams.delete('edit');location.href=next.toString();};
+  function arrange(){
+    if(!editable())return;
+    const columns=[64,736,1408],heights=[64,64,64];
+    items.filter(i=>!i.parentId).forEach(item=>{const col=heights.indexOf(Math.min(...heights));item.x=columns[col];item.y=heights[col];heights[col]+=item.h+64;const el=Array.from(canvas.querySelectorAll<HTMLElement>('[data-item-id]')).find(el=>el.dataset.itemId===item.id);if(el)position(el,item);});
+    extent();fitView();save();
   }
-  document.querySelector<HTMLButtonElement>('[data-arrange]')!.onclick=()=>arrange();
-  document.querySelector<HTMLInputElement>('[data-widget-search]')!.oninput=e=>{
-    const query=(e.target as HTMLInputElement).value.trim().toLowerCase();
-    document.querySelectorAll<HTMLButtonElement>('[data-add]').forEach(button=>{button.hidden=!button.textContent!.toLowerCase().includes(query);});
-  };
-  const nativeFetch=window.fetch.bind(window);window.fetch=(input,init)=>{const url=typeof input==='string'?input:input instanceof URL?input.toString():input.url;if(url.includes('ipwho.is/')||url.includes('ipinfo.io/json'))return nativeFetch('/api/location',init);return nativeFetch(input,init);};
-  items.filter(i=>!i.parentId).forEach(mount);items.filter(i=>i.parentId).forEach(mount);extent();
-  try{if(!localStorage.getItem('myrt1e-workspace-polish-v2')){localStorage.setItem('myrt1e-workspace-layout-backup',JSON.stringify(items));arrange();localStorage.setItem('myrt1e-workspace-polish-v2','1');}}catch{}
+  document.querySelector<HTMLButtonElement>('[data-arrange]')!.onclick=arrange;
+  document.querySelector<HTMLInputElement>('[data-widget-search]')!.oninput=e=>{const query=(e.target as HTMLInputElement).value.trim().toLowerCase();document.querySelectorAll<HTMLButtonElement>('[data-add]').forEach(button=>button.hidden=!button.textContent!.toLowerCase().includes(query));};
+  const cameraObserver=new ResizeObserver(()=>{cancelAnimationFrame(cameraFrame);cameraFrame=requestAnimationFrame(()=>{syncLock();fitView();});});cameraObserver.observe(viewport);
+  renderWorkspace();
   window.setInterval(clock,30000);
 </script>

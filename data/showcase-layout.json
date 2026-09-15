@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "baseWidth": 1440,
+  "baseHeight": 1688,
+  "items": [
+    {
+      "id": "profile",
+      "kind": "intro",
+      "x": 0,
+      "y": 0,
+      "w": 600,
+      "h": 780
+    },
+    {
+      "id": "contact",
+      "kind": "contact",
+      "x": 225,
+      "y": 494,
+      "w": 488,
+      "h": 312,
+      "parentId": "profile"
+    },
+    {
+      "id": "time",
+      "kind": "time",
+      "x": 0,
+      "y": 780,
+      "w": 600,
+      "h": 252
+    },
+    {
+      "id": "stack",
+      "kind": "stack",
+      "x": 0,
+      "y": 1032,
+      "w": 600,
+      "h": 656
+    },
+    {
+      "id": "home",
+      "kind": "location",
+      "x": 600,
+      "y": 0,
+      "w": 400,
+      "h": 365.1940298507463
+    },
+    {
+      "id": "weather",
+      "kind": "weather",
+      "x": 1000,
+      "y": 0,
+      "w": 440,
+      "h": 365.1940298507463
+    },
+    {
+      "id": "media",
+      "kind": "nowplaying",
+      "x": 600,
+      "y": 1152,
+      "w": 400,
+      "h": 532
+    },
+    {
+      "id": "dashboard",
+      "kind": "dashboard",
+      "x": 1000,
+      "y": 1152,
+      "w": 440,
+      "h": 532
+    },
+    {
+      "id": "articles",
+      "kind": "article",
+      "x": 600,
+      "y": 365.1940298507463,
+      "w": 840,
+      "h": 786.8059701492537
+    }
+  ]
+}

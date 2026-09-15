@@ -9,7 +9,7 @@ import Workspace from '../components/Workspace.astro';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="myrt1e 的个人数字自留地：渲染、游戏与 AI。" />
-    <title>Myrtle Archive</title>
+    <title>Myrt1e lab · Personal Archive</title>
   </head>
   <body>
 <main>
@@ -59,9 +59,59 @@ import Workspace from '../components/Workspace.astro';
   const clock = document.querySelector('[data-clock]');
   const lines = ['enter the private system', 'loading renderer / game / ai...', 'archive connection established.'];
   let lineIndex = 0;
-  const enterArchive = () => document.querySelector('#main-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const routeQuery = new URLSearchParams(location.search);
+  const workspace = routeQuery.get('view') === 'workbench' || routeQuery.get('edit') === '1'
+    ? document.querySelector<HTMLElement>('#workbench-content')
+    : document.querySelector<HTMLElement>('#main-content');
+  const workspaceTop = () => workspace ? workspace.getBoundingClientRect().top + window.scrollY : 0;
+  const enterArchive = () => workspace?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (routeQuery.has('section') || routeQuery.get('view') === 'workbench' || routeQuery.get('edit') === '1') {
+    const jumpToRoute = () => workspace?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    requestAnimationFrame(jumpToRoute);
+    window.setTimeout(jumpToRoute, 120);
+  }
   enterControls.forEach((control) => control.addEventListener('click', enterArchive));
-  window.addEventListener('wheel', (event) => { if (window.scrollY < 8 && event.deltaY > 10) enterArchive(); }, { passive: true });
+  let upwardIntent = 0;
+  let intentTimer = 0;
+  const returnToWorkspace = () => { const top = workspaceTop(); window.scrollTo({ top, behavior: 'smooth' }); };
+  const returnToHero = () => { upwardIntent = 0; window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  window.addEventListener('wheel', (event) => {
+    const top = workspaceTop();
+    const atWorkspaceCard = Boolean(workspace) && window.scrollY >= top - 36 && window.scrollY <= top + 36;
+    if (atWorkspaceCard && event.deltaY < 0) {
+      event.preventDefault();
+      upwardIntent += Math.abs(event.deltaY);
+      window.clearTimeout(intentTimer);
+      intentTimer = window.setTimeout(() => { upwardIntent = 0; }, 700);
+      if (upwardIntent >= 180) returnToHero();
+      else returnToWorkspace();
+      return;
+    }
+    upwardIntent = 0;
+    if (window.scrollY < 8 && event.deltaY > 10) {
+      event.preventDefault();
+      enterArchive();
+    }
+  }, { passive: false });
+  let touchStartY = 0;
+  let touchIntent = 0;
+  window.addEventListener('touchstart', (event) => { touchStartY = event.touches[0]?.clientY ?? 0; touchIntent = 0; }, { passive: true });
+  window.addEventListener('touchmove', (event) => {
+    const currentY = event.touches[0]?.clientY ?? touchStartY;
+    const delta = currentY - touchStartY;
+    const top = workspaceTop();
+    const atWorkspaceCard = Boolean(workspace) && window.scrollY >= top - 36 && window.scrollY <= top + 36;
+    if (atWorkspaceCard && delta > 0) {
+      event.preventDefault();
+      touchIntent = Math.max(touchIntent, delta);
+      returnToWorkspace();
+    }
+  }, { passive: false });
+  window.addEventListener('touchend', () => {
+    if (touchIntent >= 110) returnToHero();
+    touchStartY = 0;
+    touchIntent = 0;
+  }, { passive: true });
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let characterIndex = 0;
   let deleting = false;
