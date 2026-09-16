@@ -1,0 +1,15 @@
+services:
+  myrt1e-lab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: myrt1e-lab
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 4322
+    ports:
+      - "127.0.0.1:4322:4322"

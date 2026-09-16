@@ -43,10 +43,10 @@ import Workspace from '../components/Workspace.astro';
           <span class="command-line__mark" aria-hidden="true">&gt;_</span>
           <div><div class="command-line__dots" aria-hidden="true"><i></i><i></i><i></i></div><p><b>myrt1e@archive:~$</b> <span data-type-line>enter the private system</span><em aria-hidden="true"></em></p></div>
         </div>
-        <button class="start-game" type="button" data-enter><span></span>Start game</button>
+        <a class="start-game" href="#main-content" data-enter><span></span>Start game</a>
       </div>
       <span class="signal-mote mote-a" aria-hidden="true"></span><span class="signal-mote mote-b" aria-hidden="true"></span><span class="signal-mote mote-c" aria-hidden="true"></span>
-      <button class="scroll-cue" type="button" data-enter aria-label="Scroll to archive content"><span>scroll to enter</span><b>⌄</b></button>
+      <a class="scroll-cue" href="#main-content" data-enter aria-label="Scroll to archive content"><span>scroll to enter</span><b>⌄</b></a>
     </div>
   </section>
   <div class="signal-rail" aria-hidden="true"><span></span><b>NODE / 114.21.18</b><span></span></div>
@@ -63,14 +63,26 @@ import Workspace from '../components/Workspace.astro';
   const workspace = routeQuery.get('view') === 'workbench' || routeQuery.get('edit') === '1'
     ? document.querySelector<HTMLElement>('#workbench-content')
     : document.querySelector<HTMLElement>('#main-content');
+  const workspaceAnchor = workspace?.id ? `#${workspace.id}` : '#main-content';
+  enterControls.forEach((control) => control.setAttribute('href', workspaceAnchor));
   const workspaceTop = () => workspace ? workspace.getBoundingClientRect().top + window.scrollY : 0;
-  const enterArchive = () => workspace?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const enterArchive = () => {
+    if (!workspace) return;
+    const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+    window.scrollTo({ top: Math.max(0, Math.round(workspaceTop())), behavior });
+  };
   if (routeQuery.has('section') || routeQuery.get('view') === 'workbench' || routeQuery.get('edit') === '1') {
     const jumpToRoute = () => workspace?.scrollIntoView({ behavior: 'auto', block: 'start' });
     requestAnimationFrame(jumpToRoute);
     window.setTimeout(jumpToRoute, 120);
   }
-  enterControls.forEach((control) => control.addEventListener('click', enterArchive));
+  // Keep the anchor's native hash navigation as a no-JavaScript fallback.
+  // The handler only upgrades it to a controlled smooth scroll.
+  enterControls.forEach((control) => control.addEventListener('click', (event) => {
+    event.preventDefault();
+    enterArchive();
+    history.replaceState(history.state, '', workspaceAnchor);
+  }));
   let upwardIntent = 0;
   let intentTimer = 0;
   const returnToWorkspace = () => { const top = workspaceTop(); window.scrollTo({ top, behavior: 'smooth' }); };

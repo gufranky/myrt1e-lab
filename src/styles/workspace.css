@@ -36,7 +36,7 @@
 .canvas-scroll{height:calc(100svh - 159px);min-height:700px;overflow:auto;scrollbar-width:thin;scrollbar-color:#44464b #191a1c}
 .workspace-canvas{position:relative;background-color:#161719;background-image:radial-gradient(#ffffff0c .7px,transparent .7px);background-size:24px 24px}
 .canvas-empty{padding:80px 32px;text-align:center;color:#c4c5c9}.canvas-empty small{display:block;color:#96999f;margin-top:12px}
-.editor-status{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#1e1f21;border-top:1px solid var(--edge);color:#93969d;font-size:10px;gap:16px}
+.editor-status{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#1e1f21;border-top:1px solid var(--edge);color:#93969d;font-size:10px;gap:16px}.editor-filing{color:#b8bac0;white-space:nowrap}.editor-filing:hover,.editor-filing:focus-visible{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
 .editor-status i{display:inline-block;background:var(--gold);width:5px;height:5px;border-radius:50%;margin-right:8px}
 .editor .workspace-widget{position:absolute;display:flex;flex-direction:column;border:1px solid #ffffff16;border-radius:14px;background:linear-gradient(145deg,#28292c,#202123);box-shadow:0 8px 24px #0003,0 2px 5px #0003,inset 0 1px #ffffff05;overflow:hidden;container-type:size}
 .editor .workspace-widget.is-active{border-color:#e7c16480;box-shadow:0 12px 30px #0006,0 0 0 1px #e7c16422}

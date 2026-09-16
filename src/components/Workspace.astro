@@ -33,7 +33,7 @@ const homepageRoute = !Astro.url.searchParams.has('view') && !Astro.url.searchPa
     </div>
     <aside class="graph-details"><h2>节点详情</h2><div class="detail-empty" data-detail-empty><span>◇</span><strong>选择一个节点</strong><p>在画布中点选控件，查看位置、尺寸与所属关系。</p></div><div data-detail hidden><h3 data-detail-name></h3><span class="detail-section">布局</span><dl><dt>位置 X</dt><dd data-detail-x></dd><dt>位置 Y</dt><dd data-detail-y></dd><dt>宽度</dt><dd data-detail-w></dd><dt>高度</dt><dd data-detail-h></dd><dt>所属</dt><dd data-detail-parent></dd></dl><button data-focus-node>定位此节点</button></div><div class="graph-outline"><h2>当前节点 <span data-node-count>0</span></h2><div data-outline></div></div><p class="details-note">每一个节点，都是这个小世界的一部分。</p></aside>
   </div>
-  <footer class="editor-status"><span><i></i> 本地工作区</span><span data-save-status role="status">布局自动保存在此浏览器</span></footer>
+  <footer class="editor-status"><span><i></i> 本地工作区</span><a class="editor-filing" href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">浙ICP备2026027272号</a><span data-save-status role="status">布局自动保存在此浏览器</span></footer>
 </section>
 
 <template id="location-widget"><div class="location-visual"><div class="location-map" data-location-map aria-label="实时 IP 地理位置地图"></div><span>IP GEOLOCATION · © OpenStreetMap</span></div><div class="location-info"><div><h3 data-location-city>定位中… <small data-location-region>IP GEO</small></h3><p data-location-country>正在获取网络位置</p></div><span class="location-time" data-wuhan-time>--:--</span></div><div class="widget-foot"><span data-location-coordinates>--</span><span data-location-zone>WAITING</span></div></template>
